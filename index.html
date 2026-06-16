@@ -79,7 +79,7 @@
   .setup-banner p{font-size:13px;opacity:.85}
   .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
   .dot-ok{background:#2ecc71}.dot-err{background:#e74c3c}.dot-warn{background:#f39c12}
-  .code-block{background:#1e2a3a;color:#a8daff;border-radius:10px;padding:14px 18px;font-family:monospace;font-size:13px;line-height:1.7;overflow-x:auto;margin:12px 0}
+  .code-block{background:#1e2a3a;color:#a8daff;border-radius:10px;padding:14px 18px;font-family:monospace;font-size:13px;line-height:1.7;overflow-x:auto;margin:12px 0;white-space:pre}
   .code-block .comment{color:#636e7b}
   .steps{counter-reset:step}
   .step{counter-increment:step;display:flex;gap:14px;margin-bottom:18px}
@@ -325,8 +325,8 @@
               <strong>Crie o Apps Script</strong><br>
               <span style="font-size:13px;color:#555">Na planilha, clique em <em>Extensões → Apps Script</em>. Cole o código abaixo e salve:</span>
               <div class="code-block">
-<span class="comment">// Cole TODO este código no Apps Script</span>
-const SENHA = <span style="color:#f1fa8c">"sua_senha_aqui"</span>; <span class="comment">// ← mude aqui</span>
+<span class="comment">/* Cole TODO este código no Apps Script */</span>
+const SENHA = <span style="color:#f1fa8c">"sua_senha_aqui"</span>; <span class="comment">/* ← mude aqui */</span>
 const ABA_LANC = <span style="color:#f1fa8c">"Lancamentos"</span>;
 const ABA_CAT  = <span style="color:#f1fa8c">"Categorias"</span>;
 
@@ -334,7 +334,7 @@ function doGet(e){ return handle(e); }
 function doPost(e){ return handle(e); }
 
 function handle(e){
-  <span class="comment">// Lê payload base64 (GET) ou postData (POST)</span>
+  <span class="comment">/* Lê payload base64 (GET) ou postData (POST) */</span>
   let body = {};
   try {
     if(e.parameter && e.parameter.payload){
@@ -345,7 +345,7 @@ function handle(e){
     }
   } catch(err){}
   const acao = body.acao || (e.parameter||{}).acao;
-  <span class="comment">// ID da planilha enviado pelo app (tela de Configurações)</span>
+  <span class="comment">/* ID da planilha enviado pelo app (tela de Configurações) */</span>
   const idPlanilha = body.idPlanilha || (e.parameter||{}).idPlanilha;
   let res;
   try {
