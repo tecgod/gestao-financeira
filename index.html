@@ -94,6 +94,39 @@
     th,td{padding:7px;font-size:13px}
   }
 
+  /* ===== MODAL ANÁLISE IA ===== */
+  #modalIA{display:none;position:fixed;inset:0;z-index:400;background:rgba(10,20,40,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
+  #modalIA.show{display:flex;animation:fadeIn .3s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal-ia-box{background:#fff;border-radius:20px;width:100%;max-width:700px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.35);overflow:hidden}
+  .modal-ia-header{background:linear-gradient(135deg,#1e3c72,#2a5298);color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+  .modal-ia-header h2{font-size:18px;display:flex;align-items:center;gap:10px}
+  .modal-ia-header span.badge{background:rgba(255,255,255,.15);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:.5px}
+  .modal-ia-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+  .modal-ia-close:hover{background:rgba(255,255,255,.3)}
+  .modal-ia-body{padding:22px 24px;overflow-y:auto;flex:1}
+  .modal-ia-footer{padding:14px 24px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:10px}
+  .ia-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;color:#555}
+  .ia-spinner{width:48px;height:48px;border:4px solid #e0e7ff;border-top-color:#2980b9;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .ia-loading p{font-size:14px;text-align:center;line-height:1.6;max-width:300px}
+  .ia-section{margin-bottom:20px}
+  .ia-section h3{font-size:14px;font-weight:700;color:#1e3c72;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #e8eef8;padding-bottom:8px}
+  .ia-card{background:#f8faff;border:1px solid #e0e9f8;border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:14px;line-height:1.6;color:#2c3e50}
+  .ia-card.alerta{background:#fff8e1;border-color:#f6c90e;border-left:4px solid #f39c12}
+  .ia-card.positivo{background:#edfaf4;border-color:#a8e6cf;border-left:4px solid #16a085}
+  .ia-card.neutro{background:#f0f4ff;border-color:#c5d5f8;border-left:4px solid #2980b9}
+  .ia-card.critico{background:#fff0f0;border-color:#ffcdd2;border-left:4px solid #e74c3c}
+  .ia-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+  .ia-kpi-item{background:linear-gradient(135deg,#f0f4ff,#e8eeff);border-radius:10px;padding:14px;text-align:center;border:1px solid #d0daf8}
+  .ia-kpi-item .kv{font-size:22px;font-weight:bold;color:#1e3c72}
+  .ia-kpi-item .kl{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+  .ia-error{text-align:center;padding:30px;color:#888}
+  .ia-error p{margin-top:10px;font-size:14px}
+  .btn-reabrir{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:#fff;border:none;border-radius:50px;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(30,60,114,.4);z-index:200;display:none;align-items:center;gap:8px;transition:.2s}
+  .btn-reabrir:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(30,60,114,.5)}
+  @media(max-width:600px){.modal-ia-header h2{font-size:15px}.modal-ia-body{padding:16px}.ia-kpi{grid-template-columns:1fr 1fr}}
+
   @media print{
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     body{background:#fff!important;color:#000!important}
@@ -127,6 +160,34 @@
   </div>
 </div>
 
+<!-- ============ MODAL ANÁLISE IA ============ -->
+<div id="modalIA" onclick="fecharModalIA(event)">
+  <div class="modal-ia-box" onclick="event.stopPropagation()">
+    <div class="modal-ia-header">
+      <h2>📊 Análise Financeira <span class="badge">RELATÓRIO DIÁRIO</span></h2>
+      <button class="modal-ia-close" onclick="fecharModalIA()">✕</button>
+    </div>
+    <div class="modal-ia-body" id="modalIABody">
+      <div class="ia-loading">
+        <div class="ia-spinner"></div>
+        <p>Preparando análise dos seus dados...</p>
+      </div>
+    </div>
+    <div class="modal-ia-footer">
+      <span id="iaDataAnalise" style="font-size:12px;color:#999">Gerando análise...</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn b-gray" onclick="fecharModalIA()" style="padding:8px 14px;font-size:13px">Fechar</button>
+        <button class="btn b-pri" onclick="rodarAnalise()" style="padding:8px 14px;font-size:13px">🔄 Reanalisar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Botão flutuante para reabrir o modal -->
+<button class="btn-reabrir" id="btnReabrirIA" onclick="abrirModalIA()">
+  📊 Ver Análise
+</button>
+
 <div id="loader"><div>⏳ Carregando...</div></div>
 
 <!-- ============ APP ============ -->
@@ -140,6 +201,7 @@
       <button id="navDash" class="active" onclick="irPara('dash')">🏠 Dashboard</button>
       <button id="navLanc" onclick="irPara('lanc')">📝 Lançamentos</button>
       <button id="navConfig" onclick="irPara('config')">⚙️ Configurações</button>
+      <button onclick="rodarAnalise()" style="background:rgba(255,255,255,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.4)">📊 Análise</button>
     </div>
   </header>
 
@@ -516,7 +578,11 @@ async function api(acao, extra={}){
   const idPlanilha = getId();
   if(!url) throw new Error('URL do Apps Script não configurada. Vá em Configurações.');
   if(!idPlanilha) throw new Error('ID da planilha não configurado. Vá em Configurações.');
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({acao, idPlanilha, ...extra}))));
+  const body = JSON.stringify({acao, idPlanilha, ...extra});
+  // Codifica para base64 via TextEncoder — suporta acentos e caracteres especiais
+  const bytes = new TextEncoder().encode(body);
+  const binStr = Array.from(bytes, b => String.fromCharCode(b)).join('');
+  const payload = btoa(binStr);
   const fullUrl = url + '?payload=' + encodeURIComponent(payload);
   const res = await fetch(fullUrl, {redirect: 'follow'});
   const text = await res.text();
@@ -563,7 +629,7 @@ function abrirApp(){
   id_('app').style.display='block';
   id_('data').value=new Date().toISOString().slice(0,10);
   carregarCategorias();
-  carregar();
+  carregar().then(()=>{ verificarAnaliseAutomatica(); });
 }
 function sair(){
   id_('app').style.display='none';
@@ -1143,6 +1209,301 @@ function showMsg(txt,ok){
   m.style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   setTimeout(()=>{m.style.display='none';},5000);
+}
+
+// ===== ANÁLISE FINANCEIRA COM IA =====
+const ANALISE_DATE_KEY = 'gf_analise_data';
+
+function abrirModalAnalise(){
+  id_('modalIA').classList.add('show');
+  const btnF = id_('btnReabrirIA');
+  if(btnF) btnF.style.display='none';
+}
+
+function fecharModalIA(evt){
+  if(evt && evt.target !== id_('modalIA')) return;
+  id_('modalIA').classList.remove('show');
+  const btnF = id_('btnReabrirIA');
+  if(btnF) btnF.style.display='flex';
+}
+
+function verificarAnaliseAutomatica(){
+  const hoje = new Date().toISOString().slice(0,10);
+  const ultimaData = localStorage.getItem(ANALISE_DATE_KEY);
+  if(ultimaData !== hoje){
+    setTimeout(()=>{ rodarAnalise(); }, 1800);
+  } else {
+    const btnF = id_('btnReabrirIA');
+    if(btnF) btnF.style.display='flex';
+  }
+}
+
+function rodarAnalise(){
+  if(!dados.length) return;
+  abrirModalAnalise();
+  const r = calcularResumo();
+  const html = gerarHTMLAnalise(r);
+  id_('modalIABody').innerHTML = html;
+  id_('iaDataAnalise').textContent = 'Análise gerada em '+new Date().toLocaleString('pt-BR');
+  localStorage.setItem(ANALISE_DATE_KEY, new Date().toISOString().slice(0,10));
+}
+
+function calcularResumo(){
+  const historico = dados;
+  let totalE=0, totalS=0;
+  const porCategoria={}, porMes={}, recentes30=[], recentes7=[];
+  const hoje = new Date();
+
+  historico.forEach(d=>{
+    const v = parseFloat(d.valor)||0;
+    if(d.tipo==='E') totalE+=v; else totalS+=v;
+    if(!porCategoria[d.categoria]) porCategoria[d.categoria]={E:0,S:0,qtd:0};
+    porCategoria[d.categoria][d.tipo]+=v;
+    porCategoria[d.categoria].qtd++;
+    if(d.data){
+      const mes = d.data.slice(0,7);
+      if(!porMes[mes]) porMes[mes]={E:0,S:0};
+      porMes[mes][d.tipo]+=v;
+      const diff = (hoje - new Date(d.data+'T00:00:00'))/(1000*60*60*24);
+      if(diff<=30) recentes30.push(d);
+      if(diff<=7)  recentes7.push(d);
+    }
+  });
+
+  const meses = Object.keys(porMes).sort();
+  const mesesRecentes = meses.slice(-6);
+  const ult = meses.length>=1 ? porMes[meses[meses.length-1]] : null;
+  const ant = meses.length>=2 ? porMes[meses[meses.length-2]] : null;
+
+  const catSaidas = Object.entries(porCategoria)
+    .filter(([,v])=>v.S>0).sort(([,a],[,b])=>b.S-a.S)
+    .map(([cat,v])=>({cat, valor:v.S, pct:totalS>0?(v.S/totalS*100):0}));
+
+  const catEntradas = Object.entries(porCategoria)
+    .filter(([,v])=>v.E>0).sort(([,a],[,b])=>b.E-a.E)
+    .map(([cat,v])=>({cat, valor:v.E, pct:totalE>0?(v.E/totalE*100):0}));
+
+  const maioresSaidas = [...historico].filter(d=>d.tipo==='S')
+    .sort((a,b)=>b.valor-a.valor).slice(0,5);
+
+  const tE30 = recentes30.filter(d=>d.tipo==='E').reduce((s,d)=>s+d.valor,0);
+  const tS30 = recentes30.filter(d=>d.tipo==='S').reduce((s,d)=>s+d.valor,0);
+  const tE7  = recentes7.filter(d=>d.tipo==='E').reduce((s,d)=>s+d.valor,0);
+  const tS7  = recentes7.filter(d=>d.tipo==='S').reduce((s,d)=>s+d.valor,0);
+
+  // Tendência: compara último mês com penúltimo
+  let tendEntradas=0, tendSaidas=0;
+  if(ult && ant){
+    tendEntradas = ant.E>0 ? ((ult.E-ant.E)/ant.E*100) : 0;
+    tendSaidas   = ant.S>0 ? ((ult.S-ant.S)/ant.S*100) : 0;
+  }
+
+  // Média mensal
+  const totalMeses = meses.length || 1;
+  const mediaEMensal = totalE / totalMeses;
+  const mediaSMensal = totalS / totalMeses;
+
+  // Nota de saúde financeira (0-10) calculada localmente
+  let nota = 5;
+  const margem = totalE>0 ? (totalE-totalS)/totalE*100 : -100;
+  if(margem>=30) nota=9; else if(margem>=20) nota=8; else if(margem>=10) nota=7;
+  else if(margem>=0) nota=6; else if(margem>=-10) nota=4; else if(margem>=-25) nota=3; else nota=2;
+  if(ult && ant && ult.E > ant.E) nota = Math.min(10, nota+0.5);
+  if(ult && ant && ult.S > ant.S*1.2) nota = Math.max(1, nota-0.5);
+  nota = Math.round(nota);
+
+  return {
+    totalRegistros: historico.length, totalE, totalS,
+    saldo: totalE-totalS, margem, nota,
+    porCategoria, catSaidas, catEntradas, maioresSaidas,
+    mesesRecentes: mesesRecentes.map(m=>({mes:m, ...porMes[m]})),
+    ult, ant, tendEntradas, tendSaidas,
+    mediaEMensal, mediaSMensal,
+    tE30, tS30, tE7, tS7,
+    saldo30: tE30-tS30, saldo7: tE7-tS7
+  };
+}
+
+function gerarHTMLAnalise(r){
+  const corNota = r.nota>=7?'#16a085': r.nota>=5?'#f39c12':'#e74c3c';
+  const emojiNota = r.nota>=8?'😄': r.nota>=6?'🙂': r.nota>=5?'😐':'😟';
+  const barra = `<div style="background:#e0e7f0;border-radius:20px;height:10px;margin:6px 0 0"><div style="width:${r.nota*10}%;background:${corNota};height:100%;border-radius:20px"></div></div>`;
+
+  let html = `<div class="ia-kpi">
+    <div class="ia-kpi-item">
+      <div class="kv" style="color:${corNota}">${r.nota}/10 ${emojiNota}</div>
+      <div class="kl">Saúde Financeira</div>${barra}
+    </div>
+    <div class="ia-kpi-item">
+      <div class="kv" style="color:${r.saldo>=0?'#16a085':'#e74c3c'}">${fmt(r.saldo)}</div>
+      <div class="kl">Saldo Geral</div>
+    </div>
+    <div class="ia-kpi-item">
+      <div class="kv">${r.margem>=0?'+':''}${r.margem.toFixed(1)}%</div>
+      <div class="kl">Margem Líquida</div>
+    </div>
+    <div class="ia-kpi-item">
+      <div class="kv">${fmt(r.mediaEMensal)}</div>
+      <div class="kl">Média Entrada/Mês</div>
+    </div>
+  </div>`;
+
+  // --- RESUMO GERAL ---
+  html += `<div class="ia-section"><h3>📋 Resumo Geral</h3>`;
+  const resumoTexto = r.saldo>=0
+    ? `Negócio com saldo positivo de <strong>${fmt(r.saldo)}</strong> no histórico total. Margem líquida de <strong>${r.margem.toFixed(1)}%</strong> sobre as entradas.`
+    : `Atenção: as saídas superam as entradas em <strong>${fmt(Math.abs(r.saldo))}</strong> no histórico total. Margem negativa de <strong>${r.margem.toFixed(1)}%</strong>.`;
+  html += `<div class="ia-card neutro">${resumoTexto}</div></div>`;
+
+  // --- ÚLTIMOS 30 DIAS ---
+  html += `<div class="ia-section"><h3>📅 Últimos 30 Dias</h3>`;
+  html += `<div class="ia-kpi" style="margin-bottom:0">
+    <div class="ia-kpi-item"><div class="kv" style="color:#16a085">${fmt(r.tE30)}</div><div class="kl">Entradas</div></div>
+    <div class="ia-kpi-item"><div class="kv" style="color:#e74c3c">${fmt(r.tS30)}</div><div class="kl">Saídas</div></div>
+    <div class="ia-kpi-item"><div class="kv" style="color:${r.saldo30>=0?'#16a085':'#e74c3c'}">${fmt(r.saldo30)}</div><div class="kl">Saldo</div></div>
+    <div class="ia-kpi-item"><div class="kv" style="color:#2980b9">${fmt(r.tE7)}</div><div class="kl">Entradas (7 dias)</div></div>
+  </div></div>`;
+
+  // --- TENDÊNCIA ---
+  if(r.ult && r.ant){
+    html += `<div class="ia-section"><h3>📈 Tendência (Último vs Penúltimo Mês)</h3>`;
+    const tendE = r.tendEntradas;
+    const tendS = r.tendSaidas;
+    const corE = tendE>=0?'#16a085':'#e74c3c';
+    const corS = tendS<=0?'#16a085':'#e74c3c'; // saída caindo é bom
+    const emojiE = tendE>=0?'📈':'📉';
+    const emojiS = tendS<=0?'📉':'📈';
+    html += `<div class="ia-card neutro">
+      ${emojiE} Entradas: <strong style="color:${corE}">${tendE>=0?'+':''}${tendE.toFixed(1)}%</strong> em relação ao mês anterior &nbsp;|&nbsp;
+      ${emojiS} Saídas: <strong style="color:${corS}">${tendS>=0?'+':''}${tendS.toFixed(1)}%</strong> em relação ao mês anterior
+    </div>`;
+    if(tendE < -10) html += `<div class="ia-card alerta">⚠️ As entradas caíram <strong>${Math.abs(tendE).toFixed(1)}%</strong> no último mês. Verifique se há queda nas vendas ou serviços.</div>`;
+    if(tendS > 20)  html += `<div class="ia-card alerta">⚠️ As saídas aumentaram <strong>${tendS.toFixed(1)}%</strong> no último mês. Identifique quais categorias puxaram esse aumento.</div>`;
+    if(tendE > 10)  html += `<div class="ia-card positivo">✅ Boa evolução! As entradas cresceram <strong>${tendE.toFixed(1)}%</strong> no último mês.</div>`;
+    if(tendS < -10) html += `<div class="ia-card positivo">✅ Custos reduziram <strong>${Math.abs(tendS).toFixed(1)}%</strong> no último mês. Bom controle de gastos.</div>`;
+    html += `</div>`;
+  }
+
+  // --- MAIORES GASTOS POR CATEGORIA ---
+  if(r.catSaidas.length){
+    html += `<div class="ia-section"><h3>📊 Maiores Gastos por Categoria</h3>`;
+    r.catSaidas.slice(0,5).forEach((c,i)=>{
+      const largura = Math.round(c.pct);
+      const cor = i===0?'#e74c3c': i===1?'#e67e22':'#f1c40f';
+      html += `<div class="ia-card" style="padding:10px 14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600">
+          <span>${i===0?'🔴':i===1?'🟠':'🟡'} ${c.cat}</span>
+          <span>${fmt(c.valor)} <small style="color:#888">(${c.pct.toFixed(1)}%)</small></span>
+        </div>
+        <div style="background:#eee;border-radius:10px;height:8px">
+          <div style="width:${largura}%;background:${cor};height:100%;border-radius:10px"></div>
+        </div>
+      </div>`;
+    });
+    // Dica sobre o maior gasto
+    const maior = r.catSaidas[0];
+    if(maior.pct > 40){
+      html += `<div class="ia-card alerta">⚠️ <strong>${maior.cat}</strong> concentra mais de ${maior.pct.toFixed(0)}% de todas as saídas. Considere negociar valores ou buscar alternativas para essa categoria.</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // --- PRINCIPAIS ENTRADAS ---
+  if(r.catEntradas.length){
+    html += `<div class="ia-section"><h3>💰 Principais Fontes de Entrada</h3>`;
+    r.catEntradas.slice(0,3).forEach((c,i)=>{
+      html += `<div class="ia-card positivo">
+        ${i===0?'🥇':i===1?'🥈':'🥉'} <strong>${c.cat}</strong>: ${fmt(c.valor)} (${c.pct.toFixed(1)}% das entradas)
+      </div>`;
+    });
+    if(r.catEntradas.length===1){
+      html += `<div class="ia-card alerta">⚠️ Toda a receita vem de uma única fonte (<strong>${r.catEntradas[0].cat}</strong>). Diversificar entradas reduz riscos.</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // --- TOP 5 MAIORES SAÍDAS INDIVIDUAIS ---
+  if(r.maioresSaidas.length){
+    html += `<div class="ia-section"><h3>🔍 5 Maiores Saídas Individuais</h3>`;
+    r.maioresSaidas.forEach((d,i)=>{
+      html += `<div class="ia-card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px">
+        <span><strong>${i+1}.</strong> ${d.descricao} <small style="color:#888">(${d.categoria})</small></span>
+        <span style="font-weight:bold;color:#e74c3c;white-space:nowrap;margin-left:10px">${fmt(d.valor)}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // --- SUGESTÕES ---
+  const sugestoes = gerarSugestoes(r);
+  if(sugestoes.length){
+    html += `<div class="ia-section"><h3>💡 Sugestões de Melhoria</h3>`;
+    sugestoes.forEach((s,i)=>{
+      html += `<div class="ia-card ${s.tipo}"><strong>${i+1}.</strong> ${s.texto}</div>`;
+    });
+    html += `</div>`;
+  }
+
+  // --- EVOLUÇÃO MENSAL ---
+  if(r.mesesRecentes.length){
+    html += `<div class="ia-section"><h3>🗓️ Evolução Mensal (últimos ${r.mesesRecentes.length} meses)</h3>`;
+    [...r.mesesRecentes].reverse().forEach(m=>{
+      const saldoM = (m.E||0)-(m.S||0);
+      const cor = saldoM>=0?'#16a085':'#e74c3c';
+      const [ano,mes] = m.mes.split('-');
+      const nomeMes = new Date(ano,mes-1,1).toLocaleString('pt-BR',{month:'long',year:'numeric'});
+      html += `<div class="ia-card" style="padding:10px 14px">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px">
+          <strong style="text-transform:capitalize">${nomeMes}</strong>
+          <span style="color:${cor};font-weight:bold">${saldoM>=0?'+':''}${fmt(saldoM)}</span>
+        </div>
+        <div style="font-size:12px;color:#666;margin-top:4px">
+          📥 ${fmt(m.E||0)} &nbsp;|&nbsp; 📤 ${fmt(m.S||0)}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  return html;
+}
+
+function gerarSugestoes(r){
+  const s = [];
+  const margem = r.margem;
+
+  if(margem < 0)
+    s.push({tipo:'critico', texto:`Saldo negativo de <strong>${fmt(Math.abs(r.saldo))}</strong>. Prioridade máxima: cortar saídas não essenciais e aumentar entradas.`});
+  else if(margem < 15)
+    s.push({tipo:'alerta', texto:`Margem de apenas <strong>${margem.toFixed(1)}%</strong>. Qualquer imprevisto pode comprometer o caixa. Busque aumentar a margem para pelo menos 20%.`});
+  else
+    s.push({tipo:'positivo', texto:`Margem de <strong>${margem.toFixed(1)}%</strong> — saudável. Considere reservar parte do lucro em uma conta de emergência (ideal: 3 meses de custo).`});
+
+  if(r.catSaidas.length && r.catSaidas[0].pct > 35)
+    s.push({tipo:'alerta', texto:`<strong>${r.catSaidas[0].cat}</strong> representa ${r.catSaidas[0].pct.toFixed(0)}% das saídas. Negocie contratos, busque fornecedores alternativos ou reveja esse custo.`});
+
+  if(r.catEntradas.length === 1)
+    s.push({tipo:'alerta', texto:`Receita concentrada 100% em <strong>${r.catEntradas[0].cat}</strong>. Diversifique fontes de renda para proteger o negócio.`});
+
+  if(r.mediaSMensal > r.mediaEMensal * 0.85 && r.saldo>=0)
+    s.push({tipo:'alerta', texto:`As saídas consomem <strong>${(r.mediaSMensal/r.mediaEMensal*100).toFixed(0)}%</strong> das entradas mensais. Pouca margem de segurança.`});
+
+  if(r.ult && r.ant && r.tendEntradas < -15)
+    s.push({tipo:'critico', texto:`Entradas caíram <strong>${Math.abs(r.tendEntradas).toFixed(1)}%</strong> no último mês. Analise o que mudou e tome ação rápida.`});
+
+  if(r.ult && r.ant && r.tendSaidas > 25)
+    s.push({tipo:'alerta', texto:`Saídas cresceram <strong>${r.tendSaidas.toFixed(1)}%</strong> no último mês. Identifique os gastos que aumentaram e avalie se são necessários.`});
+
+  if(r.maioresSaidas.length && r.maioresSaidas[0].valor > r.mediaEMensal * 0.5)
+    s.push({tipo:'alerta', texto:`O maior gasto individual (<strong>${r.maioresSaidas[0].descricao}</strong>, ${fmt(r.maioresSaidas[0].valor)}) representa mais de 50% da entrada média mensal.`});
+
+  if(margem >= 20 && r.saldo > 0)
+    s.push({tipo:'positivo', texto:`Negócio com boa saúde financeira. Avalie reinvestir parte do lucro em marketing ou capacitação para aumentar as entradas.`});
+
+  if(r.totalRegistros < 10)
+    s.push({tipo:'neutro', texto:`Poucos lançamentos registrados (${r.totalRegistros}). Quanto mais dados, mais precisa será a análise. Registre todas as entradas e saídas.`});
+
+  return s;
 }
 
 // ===== INÍCIO =====
