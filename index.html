@@ -430,7 +430,23 @@
       </div>
 
       <div class="box">
-        <h2>📚 Lançamentos já salvos</h2>
+        <h2>📚 Lançamentos já salvos (<span id="qtdLancSalvos">0</span>)</h2>
+        <div class="filtros" style="margin-bottom:14px">
+          <div>
+            <label>Ver por</label>
+            <select id="lancPeriodo" onchange="renderLanc()">
+              <option value="dia">Dia</option>
+              <option value="semana">Semana</option>
+              <option value="mes">Mês</option>
+              <option value="ano">Ano</option>
+            </select>
+          </div>
+          <div>
+            <label>Data de referência</label>
+            <input type="date" id="lancData" onchange="renderLanc()">
+          </div>
+          <button class="btn b-gray" onclick="lancHoje()">📅 Hoje</button>
+        </div>
         <div class="tbl-wrap">
           <table>
             <thead>
@@ -773,6 +789,7 @@ function abrirApp(){
   id_('login').style.display='none';
   id_('app').style.display='block';
   id_('data').value=new Date().toISOString().slice(0,10);
+  id_('lancData').value=new Date().toISOString().slice(0,10);
   carregarCategorias();
   carregar().then(()=>{ verificarAnaliseAutomatica(); });
 }
@@ -1216,9 +1233,49 @@ async function salvarEdicaoLancamento(){
   }
 }
 
+// ===== FILTRO DE PERÍODO DA TABELA DE LANÇAMENTOS SALVOS =====
+function formatarDataLocal(dt){
+  return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+}
+function lancHoje(){
+  id_('lancData').value=new Date().toISOString().slice(0,10);
+  renderLanc();
+}
+function calcularRangeLanc(){
+  const periodo = id_('lancPeriodo').value;
+  const ref = id_('lancData').value || new Date().toISOString().slice(0,10);
+  const [ay,am,ad] = ref.split('-').map(Number);
+  const dataRef = new Date(ay, am-1, ad);
+  let ini, fim;
+  if(periodo==='semana'){
+    const diaSemana = dataRef.getDay(); // 0=domingo
+    const offsetSeg = (diaSemana===0?6:diaSemana-1); // semana começa na segunda
+    const inicioSemana = new Date(dataRef); inicioSemana.setDate(dataRef.getDate()-offsetSeg);
+    const fimSemana = new Date(inicioSemana); fimSemana.setDate(inicioSemana.getDate()+6);
+    ini = formatarDataLocal(inicioSemana);
+    fim = formatarDataLocal(fimSemana);
+  } else if(periodo==='mes'){
+    ini = ay+'-'+String(am).padStart(2,'0')+'-01';
+    const ultimoDia = new Date(ay, am, 0).getDate();
+    fim = ay+'-'+String(am).padStart(2,'0')+'-'+String(ultimoDia).padStart(2,'0');
+  } else if(periodo==='ano'){
+    ini = ay+'-01-01';
+    fim = ay+'-12-31';
+  } else { // dia
+    ini = fim = ref;
+  }
+  return {ini, fim};
+}
+
 // ===== TABELA DE LANÇAMENTOS SALVOS =====
 function renderLanc(){
-  const ord=[...dados].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  const {ini, fim} = calcularRangeLanc();
+  const filtrados = dados.filter(d=>{
+    const dt = String(d.data||'').slice(0,10);
+    return dt>=ini && dt<=fim;
+  });
+  id_('qtdLancSalvos').textContent=filtrados.length;
+  const ord=[...filtrados].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
   id_('tabelaLanc').innerHTML=ord.map(d=>`
     <tr>
       <td>${fmtData(d.data)}</td>
@@ -1227,7 +1284,7 @@ function renderLanc(){
       <td><span class="tag ${d.tipo}">${d.tipo==='E'?'Entrada':'Saída'}</span></td>
       <td>${fmt(d.valor)}</td>
       <td style="display:flex;gap:6px"><button class="btn b-orange" style="padding:4px 9px" onclick="editar('${d.id}')">✏️</button><button class="btn b-red" style="padding:4px 9px" onclick="excluir('${d.id}')">🗑️</button></td>
-    </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:#999">Nenhum lançamento salvo ainda.</td></tr>';
+    </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:#999">Nenhum lançamento neste período.</td></tr>';
 }
 
 // ===== FILTROS =====
