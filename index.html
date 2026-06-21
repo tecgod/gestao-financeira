@@ -43,6 +43,10 @@
   .c-red{background:linear-gradient(135deg,#cb2d3e,#ef473a)}
   .c-blue{background:linear-gradient(135deg,#2193b0,#6dd5ed)}
   .c-purple{background:linear-gradient(135deg,#834d9b,#d04ed6)}
+  .card.clickable{cursor:pointer;transition:transform .18s,box-shadow .18s}
+  .card.clickable:hover{transform:translateY(-4px) scale(1.015);box-shadow:0 12px 28px rgba(0,0,0,.22)}
+  .card.clickable:active{transform:translateY(-1px) scale(.99)}
+  .card .ver-mais{margin-top:10px;font-size:11px;opacity:.9;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
   label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
@@ -64,6 +68,10 @@
   .tbl-wrap{overflow-x:auto}
   .charts{display:grid;grid-template-columns:1.3fr 1fr;gap:20px}
   @media(max-width:768px){.charts{grid-template-columns:1fr}}
+  .charts .box,.chart-box{height:260px;position:relative}
+  .charts .box canvas,.chart-box canvas{max-height:100%!important}
+  #chC{}
+  .box.chart-box:has(#chC){height:300px}
 
   .dica{background:#fff8e1;border-left:5px solid #f39c12;padding:14px;border-radius:8px;font-size:14px}
   #loader{display:none;position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:250}
@@ -106,6 +114,8 @@
   .modal-ia-close:hover{background:rgba(255,255,255,.3)}
   .modal-ia-body{padding:22px 24px;overflow-y:auto;flex:1}
   .modal-ia-footer{padding:14px 24px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:10px}
+  #modalEdit{display:none;position:fixed;inset:0;z-index:400;background:rgba(10,20,40,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
+  #modalEdit.show{display:flex;animation:fadeIn .3s}
   .ia-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;color:#555}
   .ia-spinner{width:48px;height:48px;border:4px solid #e0e7ff;border-top-color:#2980b9;border-radius:50%;animation:spin 1s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -123,6 +133,35 @@
   .ia-kpi-item .kl{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
   .ia-error{text-align:center;padding:30px;color:#888}
   .ia-error p{margin-top:10px;font-size:14px}
+  /* ===== MODAL DETALHE DE CARD (Entradas/Saídas/Saldo/Lançamentos) ===== */
+  #modalDet{display:none;position:fixed;inset:0;z-index:400;background:rgba(10,20,40,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
+  #modalDet.show{display:flex;animation:fadeIn .3s}
+  .modal-det-box{background:#fff;border-radius:20px;width:100%;max-width:820px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.35);overflow:hidden}
+  .modal-det-header{color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+  .modal-det-header h2{font-size:18px;display:flex;align-items:center;gap:10px}
+  .modal-det-close{background:rgba(255,255,255,.18);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+  .modal-det-close:hover{background:rgba(255,255,255,.32)}
+  .modal-det-filtros{background:#f6f8fc;padding:14px 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;border-bottom:1px solid #eaeef5;flex-shrink:0}
+  .modal-det-filtros label{font-size:11px;font-weight:700;color:#5a6678;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px}
+  .modal-det-filtros input,.modal-det-filtros select{padding:8px 10px;border:1px solid #d8dee8;border-radius:8px;font-size:13px}
+  .modal-det-body{padding:22px 24px;overflow-y:auto;flex:1;background:#fafbfd}
+  .det-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+  .det-kpi{background:#fff;border:1px solid #e8edf5;border-radius:12px;padding:12px 14px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .det-kpi .dv{font-size:18px;font-weight:800;color:#1e3c72}
+  .det-kpi .dl{font-size:10.5px;color:#8492a6;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+  .det-section{margin-bottom:20px}
+  .det-section h3{font-size:13px;font-weight:700;color:#1e3c72;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #e8eef8;padding-bottom:8px}
+  .det-formula{background:linear-gradient(135deg,#f0f4ff,#e8eeff);border:1px solid #d0daf8;border-radius:12px;padding:18px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-weight:700;color:#1e3c72}
+  .det-formula .op{color:#8492a6;font-weight:400;font-size:18px}
+  .det-formula .val-e{color:#16a085}.det-formula .val-s{color:#e74c3c}
+  .det-list-item{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #eef1f6;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:13.5px}
+  .det-list-item .meta{color:#8492a6;font-size:11.5px;margin-top:2px}
+  .det-badge{display:inline-block;background:#1e3c72;color:#fff;font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:700;margin-right:6px}
+  .det-empty{text-align:center;padding:30px;color:#9aa5b5;font-size:13.5px}
+  .det-chart-wrap{background:#fff;border:1px solid #eef1f6;border-radius:12px;padding:14px;margin-bottom:18px;height:220px;position:relative}
+  .det-chart-wrap canvas{max-height:100%!important}
+  @media(max-width:600px){.modal-det-header h2{font-size:15px}.modal-det-body{padding:16px}.det-kpis{grid-template-columns:1fr 1fr}}
+
   .btn-reabrir{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:#fff;border:none;border-radius:50px;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(30,60,114,.4);z-index:200;display:none;align-items:center;gap:8px;transition:.2s}
   .btn-reabrir:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(30,60,114,.5)}
   @media(max-width:600px){.modal-ia-header h2{font-size:15px}.modal-ia-body{padding:16px}.ia-kpi{grid-template-columns:1fr 1fr}}
@@ -152,6 +191,7 @@
 <!-- ============ LOGIN ============ -->
 <div id="login">
   <div class="login-card">
+    <img id="loginLogo" src="" alt="Logo" style="display:none;max-width:280px;max-height:160px;margin:0 auto 16px;object-fit:contain">
     <h2>🔒 Acesso Restrito</h2>
     <p>Sistema de Gestão Financeira</p>
     <input type="password" id="senha" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')entrar()">
@@ -164,7 +204,7 @@
 <div id="modalIA" onclick="fecharModalIA(event)">
   <div class="modal-ia-box" onclick="event.stopPropagation()">
     <div class="modal-ia-header">
-      <h2>📊 Análise Financeira <span class="badge">RELATÓRIO DIÁRIO</span></h2>
+      <h2 id="modalIATitulo">📊 Análise Financeira <span class="badge" id="modalIABadge">RELATÓRIO DIÁRIO</span></h2>
       <button class="modal-ia-close" onclick="fecharModalIA()">✕</button>
     </div>
     <div class="modal-ia-body" id="modalIABody">
@@ -177,14 +217,73 @@
       <span id="iaDataAnalise" style="font-size:12px;color:#999">Gerando análise...</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn b-gray" onclick="fecharModalIA()" style="padding:8px 14px;font-size:13px">Fechar</button>
-        <button class="btn b-pri" onclick="rodarAnalise()" style="padding:8px 14px;font-size:13px">🔄 Reanalisar</button>
+        <button class="btn b-pri" onclick="reanalisar()" style="padding:8px 14px;font-size:13px">🔄 Reanalisar</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ============ MODAL DETALHE (Entradas / Saídas / Saldo / Lançamentos) ============ -->
+<div id="modalDet" onclick="fecharDetalhe(event)">
+  <div class="modal-det-box" onclick="event.stopPropagation()">
+    <div class="modal-det-header" id="modalDetHeader">
+      <h2 id="modalDetTitulo">Detalhe</h2>
+      <button class="modal-det-close" onclick="fecharDetalhe()">✕</button>
+    </div>
+    <div class="modal-det-filtros no-print">
+      <div><label>De</label><input type="date" id="dDe" onchange="atualizarDetalhe()"></div>
+      <div><label>Até</label><input type="date" id="dAte" onchange="atualizarDetalhe()"></div>
+      <div><label>Categoria</label><select id="dCat" onchange="atualizarDetalhe()"></select></div>
+      <button class="btn b-gray" style="padding:8px 14px;font-size:12.5px" onclick="limparFiltroDetalhe()">Limpar período</button>
+    </div>
+    <div class="modal-det-body" id="modalDetBody"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL EDITAR LANÇAMENTO ============ -->
+<div id="modalEdit" onclick="fecharModalEdit(event)">
+  <div class="modal-ia-box" style="max-width:480px" onclick="event.stopPropagation()">
+    <div class="modal-ia-header">
+      <h2>✏️ Editar Lançamento</h2>
+      <button class="modal-ia-close" onclick="fecharModalEdit()">✕</button>
+    </div>
+    <div class="modal-ia-body">
+      <input type="hidden" id="editId">
+      <div class="grid">
+        <div>
+          <label>Data</label>
+          <input type="date" id="editData">
+        </div>
+        <div>
+          <label>Descrição</label>
+          <input type="text" id="editDesc" onkeydown="if(event.key==='Enter')salvarEdicaoLancamento()">
+        </div>
+        <div>
+          <label>Categoria</label>
+          <select id="editCat"></select>
+        </div>
+        <div>
+          <label>Tipo</label>
+          <select id="editTipo" onchange="atualizarCategoriasEdit()">
+            <option value="E">📥 Entrada</option>
+            <option value="S">📤 Saída</option>
+          </select>
+        </div>
+        <div>
+          <label>Valor (R$)</label>
+          <input type="number" id="editValor" step="0.01" min="0" placeholder="0,00" onkeydown="if(event.key==='Enter')salvarEdicaoLancamento()">
+        </div>
+      </div>
+    </div>
+    <div class="modal-ia-footer">
+      <button class="btn b-gray" onclick="fecharModalEdit()" style="padding:8px 14px;font-size:13px">Cancelar</button>
+      <button class="btn b-pri" onclick="salvarEdicaoLancamento()" style="padding:8px 14px;font-size:13px">💾 Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 <!-- Botão flutuante para reabrir o modal -->
-<button class="btn-reabrir" id="btnReabrirIA" onclick="abrirModalIA()">
+<button class="btn-reabrir" id="btnReabrirIA" onclick="abrirModalAnalise()">
   📊 Ver Análise
 </button>
 
@@ -194,7 +293,10 @@
 <div id="app" style="display:none">
   <header>
     <div class="topbar">
-      <h1>💼 Gestão Financeira</h1>
+      <div style="display:flex;align-items:center;gap:10px">
+        <img id="headerLogo" src="" alt="Logo" style="display:none;max-height:60px;max-width:200px;object-fit:contain">
+        <h1>💼 Gestão Financeira</h1>
+      </div>
       <button class="btn b-gray" onclick="sair()">Sair</button>
     </div>
     <div class="nav">
@@ -207,6 +309,7 @@
 
   <div class="container">
     <div id="printHeader">
+      <img id="printLogo" src="" alt="Logo" style="display:none;max-height:110px;max-width:320px;object-fit:contain;margin:0 auto 10px">
       <h1>Relatório Financeiro</h1>
       <p id="printData"></p>
     </div>
@@ -215,16 +318,17 @@
     <!-- ====== TELA 1: DASHBOARD ====== -->
     <div id="tela-dash" class="tela show">
 
-      <div class="dica" id="caixaDicas" style="margin-bottom:22px">
-        <strong>💡 Análise do seu negócio</strong>
-        <div id="dica" style="margin-top:6px;line-height:1.6">Carregando análise...</div>
+      <div class="cards">
+        <div class="card c-green clickable" onclick="abrirDetalhe('E')"><span class="ico">📈</span><h3>Entradas</h3><p id="cEnt">R$ 0,00</p><small id="cEntInfo">Total recebido</small><div class="ver-mais">🔍 Ver todas as entradas</div></div>
+        <div class="card c-red clickable" onclick="abrirDetalhe('S')"><span class="ico">📉</span><h3>Saídas</h3><p id="cSai">R$ 0,00</p><small id="cSaiInfo">Total gasto</small><div class="ver-mais">🔍 Ver todas as saídas</div></div>
+        <div class="card c-blue clickable" onclick="abrirDetalhe('saldo')"><span class="ico">💰</span><h3>Saldo (real)</h3><p id="cSal">R$ 0,00</p><small id="cResult">—</small><div class="ver-mais">🧮 Ver como foi calculado</div></div>
+        <div class="card c-purple clickable" onclick="abrirDetalhe('lanc')"><span class="ico">🧾</span><h3>Lançamentos</h3><p id="cQtd">0</p><small>Itens exibidos</small><div class="ver-mais">📊 Ver estatísticas</div></div>
       </div>
 
-      <div class="cards">
-        <div class="card c-green"><span class="ico">📈</span><h3>Entradas</h3><p id="cEnt">R$ 0,00</p><small id="cEntInfo">Total recebido</small></div>
-        <div class="card c-red"><span class="ico">📉</span><h3>Saídas</h3><p id="cSai">R$ 0,00</p><small id="cSaiInfo">Total gasto</small></div>
-        <div class="card c-blue"><span class="ico">💰</span><h3>Saldo (real)</h3><p id="cSal">R$ 0,00</p><small id="cResult">—</small></div>
-        <div class="card c-purple"><span class="ico">🧾</span><h3>Lançamentos</h3><p id="cQtd">0</p><small>Itens exibidos</small></div>
+      <div id="avisoCatMista" class="no-print" style="display:none"></div>
+
+      <div class="row no-print" style="margin-top:0;margin-bottom:22px">
+        <button class="btn b-orange" style="font-size:15px;padding:13px 22px" onclick="rodarDicasNegocio()">💡 Dicas de Negócio</button>
       </div>
 
       <div class="box no-print">
@@ -251,7 +355,7 @@
         <div class="box"><canvas id="chEvolucao"></canvas></div>
         <div class="box"><canvas id="chPizza"></canvas></div>
       </div>
-      <div class="box"><canvas id="chC"></canvas></div>
+      <div class="box chart-box"><canvas id="chC"></canvas></div>
 
       <div class="box">
         <h2 id="tituloTabela">📋 Relatório do Período</h2>
@@ -290,7 +394,7 @@
           </div>
           <div>
             <label>Tipo</label>
-            <select id="tipo">
+            <select id="tipo" onchange="atualizarCategoriasPorTipo()">
               <option value="E">📥 Entrada</option>
               <option value="S">📤 Saída</option>
             </select>
@@ -341,6 +445,45 @@
     <!-- ====== TELA 3: CONFIGURAÇÕES ====== -->
     <div id="tela-config" class="tela">
 
+      <!-- LOGOMARCA -->
+      <div class="box">
+        <h2>🖼️ Logomarca do sistema</h2>
+        <p style="font-size:13px;color:#666;margin-bottom:12px">Envie um arquivo <strong>PNG com fundo transparente</strong> (sem fundo) para melhor resultado no cabeçalho, na tela de login e nos relatórios impressos.</p>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+          <div id="logoPreviewWrap" style="display:none;background:repeating-conic-gradient(#e8e8e8 0% 25%,#fff 0% 50%) 0 0/16px 16px;border:1px solid #ddd;border-radius:10px;padding:8px">
+            <img id="logoPreview" src="" alt="Pré-visualização" style="max-height:110px;max-width:320px;object-fit:contain;display:block">
+          </div>
+          <input type="file" id="logoInput" accept="image/png,image/webp,image/svg+xml" style="max-width:280px">
+        </div>
+        <div class="row" style="margin-top:0">
+          <button class="btn b-green" onclick="salvarLogo()">💾 Salvar logomarca</button>
+          <button class="btn b-gray" onclick="removerLogo()">🗑️ Remover logomarca</button>
+        </div>
+      </div>
+
+      <!-- ALTERAR SENHA -->
+      <div class="box">
+        <h2>🔑 Alterar senha de acesso</h2>
+        <p style="font-size:13px;color:#666;margin-bottom:12px">Essa é a senha usada para entrar no sistema neste navegador.</p>
+        <div class="grid" style="margin-bottom:14px">
+          <div style="grid-column:1/-1">
+            <label>Senha atual</label>
+            <input type="password" id="senhaAtual" placeholder="Digite a senha atual">
+          </div>
+          <div>
+            <label>Nova senha</label>
+            <input type="password" id="senhaNova" placeholder="Nova senha">
+          </div>
+          <div>
+            <label>Confirmar nova senha</label>
+            <input type="password" id="senhaNovaConf" placeholder="Repita a nova senha">
+          </div>
+        </div>
+        <div class="row" style="margin-top:0">
+          <button class="btn b-purple" onclick="alterarSenha()">🔑 Alterar senha</button>
+        </div>
+      </div>
+
       <!-- STATUS DA INTEGRAÇÃO -->
       <div class="box">
         <h2>🔗 Integração Google Sheets</h2>
@@ -356,10 +499,6 @@
           <div style="grid-column:1/-1">
             <label>ID da Planilha do Google Sheets</label>
             <input type="text" id="cfgId" placeholder="Ex: 1A2b3C4d5E6f7G8h9I0j... (está na URL da planilha)" style="font-size:13px">
-          </div>
-          <div style="grid-column:1/-1">
-            <label>Senha do sistema</label>
-            <input type="password" id="cfgSenha" placeholder="Senha para login">
           </div>
         </div>
         <div class="row" style="margin-top:0">
@@ -388,7 +527,7 @@
               <span style="font-size:13px;color:#555">Na planilha, clique em <em>Extensões → Apps Script</em>. Cole o código abaixo e salve:</span>
               <div class="code-block">
 <span class="comment">/* Cole TODO este código no Apps Script */</span>
-const SENHA = <span style="color:#f1fa8c">"sua_senha_aqui"</span>; <span class="comment">/* ← mude aqui */</span>
+const SENHA = <span style="color:#f1fa8c">"1234"</span>; <span class="comment">/* ← mude aqui */</span>
 const ABA_LANC = <span style="color:#f1fa8c">"Lancamentos"</span>;
 const ABA_CAT  = <span style="color:#f1fa8c">"Categorias"</span>;
 
@@ -417,6 +556,7 @@ function handle(e){
     else if(acao==='listarLancamentos') res = listarLancamentos(ss);
     else if(acao==='salvarVarios') res = salvarVarios(ss, body.itens);
     else if(acao==='excluirLancamento') res = excluirLancamento(ss, body.id);
+    else if(acao==='editarLancamento') res = editarLancamento(ss, body.id, body.dados);
     else if(acao==='listarCategorias') res = listarCategorias(ss);
     else if(acao==='salvarCategorias') res = salvarCategorias(ss, body.cats);
     else res = {error:'acao desconhecida: '+acao};
@@ -464,6 +604,18 @@ function excluirLancamento(ss, id){
   for(let i=rows.length-1;i>=1;i--){
     if(String(rows[i][0])===String(id)){
       al.deleteRow(i+1); return {ok:true};
+    }
+  }
+  return {ok:false, error:'não encontrado'};
+}
+
+function editarLancamento(ss, id, d){
+  const {al} = garantirAbas(ss);
+  const rows = al.getDataRange().getValues();
+  for(let i=rows.length-1;i>=1;i--){
+    if(String(rows[i][0])===String(id)){
+      al.getRange(i+1,2,1,5).setValues([[d.data, d.descricao, d.categoria, d.tipo, d.valor]]);
+      return {ok:true};
     }
   }
   return {ok:false, error:'não encontrado'};
@@ -570,6 +722,13 @@ let dados=[], categorias=[], filtrados=[], baseCards=[], fila=[];
 let chPizza, chC, chEvol;
 function id_(x){return document.getElementById(x);}
 function fmt(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtData(v){
+  if(!v) return '—';
+  const s=String(v).slice(0,10); // pega só "AAAA-MM-DD", ignora hora/timezone (T03:00:00.000Z etc.)
+  const partes=s.split('-');
+  if(partes.length!==3) return s;
+  return partes.reverse().join('/');
+}
 
 // ===== CHAMADA AO APPS SCRIPT =====
 // Usa GET com payload em base64 para evitar CORS preflight
@@ -597,27 +756,13 @@ async function api(acao, extra={}){
 async function entrar(){
   const s = id_('senha').value;
   const cfg = getCfg();
+  const senhaLocal = cfg.senha || '1234';
 
-  // Se não tem URL+ID configurados, usa senha local salva (ou padrão 1234)
-  if(!cfg.url || !cfg.id){
-    const senhaLocal = cfg.senha || '1234';
-    if(s === senhaLocal){ abrirApp(); }
-    else { erroLogin(); }
-    return;
-  }
-
-  showLoad(true);
-  try {
-    const r = await api('validarSenha', {senha: s});
-    showLoad(false);
-    if(r.ok) abrirApp(); else erroLogin();
-  } catch(e){
-    showLoad(false);
-    // Fallback para senha local se Sheets offline
-    const senhaLocal = cfg.senha || '1234';
-    if(s === senhaLocal){ abrirApp(); }
-    else { erroLogin(); }
-  }
+  // A senha local (definida em Configurações > Alterar senha) é a única
+  // fonte de verdade para o login — evita a inconsistência de antes,
+  // em que às vezes validava pela planilha e às vezes pela senha local.
+  if(s === senhaLocal){ abrirApp(); return; }
+  erroLogin();
 }
 function erroLogin(){
   id_('loginMsg').textContent='Senha incorreta.';
@@ -657,8 +802,8 @@ function carregarTelaConfig(){
   const cfg = getCfg();
   id_('cfgUrl').value = cfg.url || '';
   id_('cfgId').value = cfg.id || '';
-  id_('cfgSenha').value = cfg.senha || '';
   atualizarStatusIntegracao();
+  carregarLogoPreview();
 }
 function atualizarStatusIntegracao(){
   const el = id_('statusIntegracao');
@@ -675,21 +820,95 @@ function atualizarStatusIntegracao(){
 function salvarConfig(){
   const url = id_('cfgUrl').value.trim();
   const idPlanilha = id_('cfgId').value.trim();
-  const senha = id_('cfgSenha').value.trim();
-  if(!url && !idPlanilha && !senha){ showMsg('Informe pelo menos um campo.',false); return; }
+  if(!url && !idPlanilha){ showMsg('Informe a URL e o ID da planilha.',false); return; }
   if((url && !idPlanilha) || (!url && idPlanilha)){ showMsg('Para sincronizar com o Sheets, informe a URL e o ID da planilha juntos.',false); return; }
-  setCfg({url, id: idPlanilha, senha});
+  const cfg = getCfg();
+  setCfg({...cfg, url, id: idPlanilha});
   atualizarStatusIntegracao();
   showMsg('Configuração salva!', true);
 }
 function limparConfig(){
-  if(!confirm('Limpar a configuração de integração?')) return;
-  localStorage.removeItem('gf_cfg');
+  if(!confirm('Limpar a configuração de integração com o Google Sheets? (a senha não será afetada)')) return;
+  const cfg = getCfg();
+  setCfg({senha: cfg.senha});
   id_('cfgUrl').value='';
   id_('cfgId').value='';
-  id_('cfgSenha').value='';
   atualizarStatusIntegracao();
   showMsg('Configuração removida.', true);
+}
+
+// ===== ALTERAR SENHA =====
+function alterarSenha(){
+  const cfg = getCfg();
+  const senhaLocal = cfg.senha || '1234';
+  const atual = id_('senhaAtual').value;
+  const nova = id_('senhaNova').value;
+  const conf = id_('senhaNovaConf').value;
+  if(atual !== senhaLocal){ showMsg('Senha atual incorreta.', false); return; }
+  if(!nova || nova.length < 4){ showMsg('A nova senha deve ter pelo menos 4 caracteres.', false); return; }
+  if(nova !== conf){ showMsg('A confirmação não corresponde à nova senha.', false); return; }
+  setCfg({...cfg, senha: nova});
+  id_('senhaAtual').value=''; id_('senhaNova').value=''; id_('senhaNovaConf').value='';
+  showMsg('Senha alterada com sucesso!', true);
+}
+
+// ===== LOGOMARCA =====
+function getLogo(){ return localStorage.getItem('gf_logo') || ''; }
+function aplicarLogoNosElementos(){
+  const logo = getLogo();
+  ['loginLogo','headerLogo','printLogo'].forEach(id=>{
+    const el = id_(id);
+    if(!el) return;
+    if(logo){ el.src = logo; el.style.display='block'; }
+    else { el.src=''; el.style.display='none'; }
+  });
+}
+function carregarLogoPreview(){
+  const logo = getLogo();
+  if(logo){
+    id_('logoPreview').src = logo;
+    id_('logoPreviewWrap').style.display='block';
+  } else {
+    id_('logoPreviewWrap').style.display='none';
+  }
+}
+function ligarPreviaLogoInput(){
+  const input = id_('logoInput');
+  if(!input) return;
+  input.addEventListener('change', function(){
+    const file = this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      id_('logoPreview').src = e.target.result;
+      id_('logoPreviewWrap').style.display='block';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function salvarLogo(){
+  const input = id_('logoInput');
+  const file = input.files[0];
+  if(!file){
+    // Nenhum arquivo novo selecionado: só confirma o que já está salvo
+    showMsg('Selecione um arquivo de imagem para salvar.', false);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    localStorage.setItem('gf_logo', e.target.result);
+    aplicarLogoNosElementos();
+    showMsg('Logomarca salva!', true);
+  };
+  reader.readAsDataURL(file);
+}
+function removerLogo(){
+  if(!confirm('Remover a logomarca do sistema?')) return;
+  localStorage.removeItem('gf_logo');
+  id_('logoInput').value='';
+  carregarLogoPreview();
+  aplicarLogoNosElementos();
+  showMsg('Logomarca removida.', true);
 }
 async function testarConexao(){
   const url = id_('cfgUrl').value.trim();
@@ -744,13 +963,38 @@ async function carregarCategorias(){
 
 function preencherSelects(){
   const opc=categorias.map(c=>`<option value="${c}">${c}</option>`).join('');
-  id_('cat').innerHTML=opc;
+  atualizarCategoriasPorTipo();
   id_('fCat').innerHTML='<option value="">Todas</option>'+opc;
   id_('tabelaCat').innerHTML=categorias.map(c=>`
     <tr>
       <td>${c}</td>
       <td><button class="btn b-red" style="padding:4px 9px" onclick="delCat('${c}')">🗑️</button></td>
     </tr>`).join('')||'<tr><td colspan="2" style="text-align:center;color:#999">Nenhuma categoria.</td></tr>';
+}
+
+// Filtra/organiza o select de Categoria do formulário de acordo com o Tipo
+// selecionado (Entrada/Saída), agrupando primeiro as categorias que já foram
+// usadas naquele tipo — assim fica visualmente claro quando alguém tenta usar
+// uma categoria típica de Saída (ex: "Salário") dentro de um lançamento de Entrada.
+function atualizarCategoriasPorTipo(){
+  const catEl=id_('cat');
+  if(!catEl) return;
+  const tipoSel = id_('tipo') ? id_('tipo').value : 'E';
+  const atual = catEl.value;
+  if(!dados || !dados.length){
+    catEl.innerHTML = categorias.map(c=>`<option value="${c}">${c}</option>`).join('');
+    if(categorias.includes(atual)) catEl.value = atual;
+    return;
+  }
+  const usadas=new Set();
+  dados.forEach(d=>{ if(d.tipo===tipoSel) usadas.add(d.categoria); });
+  const comuns = categorias.filter(c=>usadas.has(c));
+  const outras = categorias.filter(c=>!usadas.has(c));
+  let html='';
+  if(comuns.length) html += `<optgroup label="${tipoSel==='E'?'📥 Já usadas em Entradas':'📤 Já usadas em Saídas'}">${comuns.map(c=>`<option value="${c}">${c}</option>`).join('')}</optgroup>`;
+  if(outras.length) html += `<optgroup label="${comuns.length?'Outras categorias':'Categorias'}">${outras.map(c=>`<option value="${c}">${c}</option>`).join('')}</optgroup>`;
+  catEl.innerHTML = html;
+  if(categorias.includes(atual)) catEl.value = atual;
 }
 
 async function addCat(){
@@ -782,7 +1026,7 @@ async function sincronizarCategorias(){
 async function carregar(){
   if(!modoSheets()){
     dados=JSON.parse(localStorage.getItem('lanc')||'[]');
-    aplicar(); renderLanc();
+    aplicar(); renderLanc(); atualizarCategoriasPorTipo();
     return;
   }
   showLoad(true);
@@ -794,7 +1038,7 @@ async function carregar(){
     showMsg('Offline: usando dados em cache local.',false);
   }
   showLoad(false);
-  aplicar(); renderLanc();
+  aplicar(); renderLanc(); atualizarCategoriasPorTipo();
 }
 
 async function sincronizarDoSheets(){
@@ -827,7 +1071,7 @@ function renderFila(){
   id_('qtdFila').textContent=fila.length;
   id_('tabelaFila').innerHTML=fila.map((d,i)=>`
     <tr>
-      <td>${d.data.split('-').reverse().join('/')}</td>
+      <td>${fmtData(d.data)}</td>
       <td>${d.descricao}</td>
       <td>${d.categoria}</td>
       <td><span class="tag ${d.tipo}">${d.tipo==='E'?'Entrada':'Saída'}</span></td>
@@ -907,17 +1151,82 @@ async function excluir(idLanc){
   }
 }
 
+// ===== EDITAR LANÇAMENTO =====
+function editar(idLanc){
+  const d = dados.find(x=>String(x.id)===String(idLanc));
+  if(!d){ showMsg('Lançamento não encontrado.', false); return; }
+  id_('editId').value = d.id;
+  id_('editData').value = String(d.data||'').slice(0,10);
+  id_('editDesc').value = d.descricao;
+  id_('editTipo').value = d.tipo;
+  atualizarCategoriasEdit();
+  id_('editCat').value = d.categoria;
+  id_('editValor').value = d.valor;
+  id_('modalEdit').classList.add('show');
+}
+
+function atualizarCategoriasEdit(){
+  const catEl = id_('editCat');
+  if(!catEl) return;
+  const atual = catEl.value;
+  catEl.innerHTML = categorias.map(c=>`<option value="${c}">${c}</option>`).join('');
+  if(categorias.includes(atual)) catEl.value = atual;
+}
+
+function fecharModalEdit(evt){
+  if(evt && evt.target !== id_('modalEdit')) return;
+  id_('modalEdit').classList.remove('show');
+}
+
+async function salvarEdicaoLancamento(){
+  const idLanc = id_('editId').value;
+  const d = {
+    data:id_('editData').value,
+    descricao:id_('editDesc').value.trim(),
+    categoria:id_('editCat').value,
+    tipo:id_('editTipo').value,
+    valor:parseFloat(id_('editValor').value)
+  };
+  if(!d.data||!d.descricao||isNaN(d.valor)||d.valor<=0){
+    showMsg('Preencha data, descrição e um valor válido.',false);return;
+  }
+
+  if(!modoSheets()){
+    let ld=JSON.parse(localStorage.getItem('lanc')||'[]');
+    const idx=ld.findIndex(x=>x.id===idLanc);
+    if(idx===-1){ showMsg('Lançamento não encontrado.', false); return; }
+    ld[idx]={...ld[idx], ...d};
+    localStorage.setItem('lanc',JSON.stringify(ld));
+    dados=ld;aplicar();renderLanc();
+    fecharModalEdit();
+    showMsg('Lançamento atualizado!',true);
+    return;
+  }
+
+  showLoad(true);
+  try {
+    await api('editarLancamento', {id: idLanc, dados: d});
+    showLoad(false);
+    fecharModalEdit();
+    showMsg('Lançamento atualizado!', true);
+    await carregar();
+  } catch(e){
+    showLoad(false);
+    showMsg('Erro ao editar: '+e.message, false);
+  }
+}
+
 // ===== TABELA DE LANÇAMENTOS SALVOS =====
 function renderLanc(){
   const ord=[...dados].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
   id_('tabelaLanc').innerHTML=ord.map(d=>`
     <tr>
-      <td>${(d.data||'').split('-').reverse().join('/')}</td>
+      <td>${fmtData(d.data)}</td>
       <td>${d.descricao}</td>
       <td>${d.categoria}</td>
       <td><span class="tag ${d.tipo}">${d.tipo==='E'?'Entrada':'Saída'}</span></td>
       <td>${fmt(d.valor)}</td>
-      <td><button class="btn b-red" style="padding:4px 9px" onclick="excluir('${d.id}')">🗑️</button></td>
+      <td style="display:flex;gap:6px"><button class="btn b-orange" style="padding:4px 9px" onclick="editar('${d.id}')">✏️</button><button class="btn b-red" style="padding:4px 9px" onclick="excluir('${d.id}')">🗑️</button></td>
     </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:#999">Nenhum lançamento salvo ainda.</td></tr>';
 }
 
@@ -963,6 +1272,233 @@ function limparFiltro(){
   aplicar();
 }
 
+// ===== MODAL DETALHE (clique nos cards do dashboard) =====
+let detTipoAtual=null, chDet=null;
+const DET_CFG={
+  E:{titulo:'📈 Entradas do Período', cor:'linear-gradient(135deg,#11998e,#38ef7d)'},
+  S:{titulo:'📉 Saídas do Período', cor:'linear-gradient(135deg,#cb2d3e,#ef473a)'},
+  saldo:{titulo:'💰 Como o Saldo foi Calculado', cor:'linear-gradient(135deg,#2193b0,#6dd5ed)'},
+  lanc:{titulo:'🧾 Estatísticas dos Lançamentos', cor:'linear-gradient(135deg,#834d9b,#d04ed6)'}
+};
+
+function abrirDetalhe(tipo){
+  detTipoAtual=tipo;
+  const cfg=DET_CFG[tipo];
+  id_('modalDetHeader').style.background=cfg.cor;
+  id_('modalDetTitulo').textContent=cfg.titulo;
+  // herda o período já aplicado no dashboard, se houver
+  id_('dDe').value=id_('fDe').value||'';
+  id_('dAte').value=id_('fAte').value||'';
+  const opc=categorias.map(c=>`<option value="${c}">${c}</option>`).join('');
+  id_('dCat').innerHTML='<option value="">Todas categorias</option>'+opc;
+  id_('dCat').value=id_('fCat').value||'';
+  id_('modalDet').classList.add('show');
+  atualizarDetalhe();
+}
+function fecharDetalhe(evt){
+  if(evt && evt.target!==id_('modalDet')) return;
+  id_('modalDet').classList.remove('show');
+}
+function limparFiltroDetalhe(){
+  id_('dDe').value='';id_('dAte').value='';id_('dCat').value='';
+  atualizarDetalhe();
+}
+
+function listaFiltradaDetalhe(){
+  const de=id_('dDe').value, ate=id_('dAte').value, cat=id_('dCat').value;
+  return dados.filter(d=>{
+    if(de && (d.data||'')<de) return false;
+    if(ate && (d.data||'')>ate) return false;
+    if(cat && d.categoria!==cat) return false;
+    return true;
+  });
+}
+
+function atualizarDetalhe(){
+  const lista=listaFiltradaDetalhe();
+  if(detTipoAtual==='E') id_('modalDetBody').innerHTML=montarDetalheTipo(lista,'E');
+  else if(detTipoAtual==='S') id_('modalDetBody').innerHTML=montarDetalheTipo(lista,'S');
+  else if(detTipoAtual==='saldo') id_('modalDetBody').innerHTML=montarDetalheSaldo(lista);
+  else if(detTipoAtual==='lanc') id_('modalDetBody').innerHTML=montarDetalheLanc(lista);
+  else if(detTipoAtual==='mista'){ id_('modalDetBody').innerHTML=montarDetalheCategoriaMista(id_('dCat').value||detCategoriaMistaAtual); return; }
+  // gráfico de evolução diária do tipo aberto (entradas/saídas) sempre que fizer sentido
+  setTimeout(()=>desenharChartDetalhe(lista),0);
+}
+
+function ordDataDesc(a,b){return (b.data||'').localeCompare(a.data||'');}
+
+function montarDetalheTipo(lista,tipo){
+  const itens=lista.filter(d=>d.tipo===tipo).sort(ordDataDesc);
+  const total=itens.reduce((s,d)=>s+d.valor,0);
+  const maior=itens.length?itens.reduce((a,b)=>b.valor>a.valor?b:a):null;
+  const menor=itens.length?itens.reduce((a,b)=>b.valor<a.valor?b:a):null;
+  const media=itens.length?total/itens.length:0;
+  const corVal=tipo==='E'?'#16a085':'#e74c3c';
+
+  let html=`<div class="det-kpis">
+    <div class="det-kpi"><div class="dv" style="color:${corVal}">${fmt(total)}</div><div class="dl">Total</div></div>
+    <div class="det-kpi"><div class="dv">${itens.length}</div><div class="dl">Lançamentos</div></div>
+    <div class="det-kpi"><div class="dv">${fmt(media)}</div><div class="dl">Ticket médio</div></div>
+    <div class="det-kpi"><div class="dv">${maior?fmt(maior.valor):'—'}</div><div class="dl">Maior valor</div></div>
+  </div>
+  <div class="det-chart-wrap"><canvas id="chDet" height="90"></canvas></div>
+  <div class="det-section"><h3>${tipo==='E'?'📥':'📤'} Lista completa (${itens.length})</h3>`;
+
+  if(!itens.length){
+    html+=`<div class="det-empty">Nenhum lançamento de ${tipo==='E'?'entrada':'saída'} no período/filtro selecionado.</div>`;
+  } else {
+    itens.forEach(d=>{
+      const destaque = maior && d.id===maior.id ? ' style="border-color:#f1c40f;background:#fffdf3"' : '';
+      html+=`<div class="det-list-item"${destaque}>
+        <div>
+          <span class="det-badge">${fmtData(d.data)}</span>${d.descricao}
+          <div class="meta">${d.categoria}${maior && d.id===maior.id?' · 🏆 maior valor do período':''}${menor && d.id===menor.id && itens.length>1?' · 🔻 menor valor':''}</div>
+        </div>
+        <strong style="color:${corVal};white-space:nowrap;margin-left:10px">${fmt(d.valor)}</strong>
+      </div>`;
+    });
+  }
+  html+='</div>';
+  return html;
+}
+
+function montarDetalheSaldo(lista){
+  let tE=0,tS=0;
+  lista.forEach(d=>{ if(d.tipo==='E') tE+=d.valor; else tS+=d.valor; });
+  const saldo=tE-tS;
+  const corSaldo=saldo>=0?'#16a085':'#e74c3c';
+  const margem=tE>0?(saldo/tE*100):0;
+
+  // melhor e pior dia (por saldo do dia)
+  const porDia={};
+  lista.forEach(d=>{
+    const dia=d.data||'—';
+    if(!porDia[dia]) porDia[dia]={e:0,s:0};
+    if(d.tipo==='E') porDia[dia].e+=d.valor; else porDia[dia].s+=d.valor;
+  });
+  const diasArr=Object.keys(porDia).map(dia=>({dia, saldo:porDia[dia].e-porDia[dia].s, e:porDia[dia].e, s:porDia[dia].s}));
+  diasArr.sort((a,b)=>b.saldo-a.saldo);
+  const melhorDia=diasArr[0], piorDia=diasArr[diasArr.length-1];
+
+  let html=`
+  <div class="det-section"><h3>🧮 Fórmula do cálculo</h3>
+    <div class="det-formula">
+      <span class="val-e">${fmt(tE)}</span><span class="op">(entradas)</span>
+      <span class="op">−</span>
+      <span class="val-s">${fmt(tS)}</span><span class="op">(saídas)</span>
+      <span class="op">=</span>
+      <span style="color:${corSaldo}">${fmt(saldo)}</span>
+    </div>
+  </div>
+  <div class="det-kpis">
+    <div class="det-kpi"><div class="dv" style="color:${corSaldo}">${margem.toFixed(1)}%</div><div class="dl">Margem sobre entradas</div></div>
+    <div class="det-kpi"><div class="dv">${lista.length}</div><div class="dl">Lançamentos considerados</div></div>
+    <div class="det-kpi"><div class="dv">${saldo>=0?'Lucro':'Prejuízo'}</div><div class="dl">Resultado do período</div></div>
+  </div>
+  <div class="det-chart-wrap"><canvas id="chDet" height="100"></canvas></div>
+  <div class="det-section"><h3>🗓️ Melhor e pior dia (por saldo diário)</h3>`;
+
+  if(melhorDia){
+    html+=`<div class="ia-card positivo" style="margin-bottom:8px">🏆 <strong>${fmtData(melhorDia.dia)}</strong> foi o dia com melhor resultado: <strong style="color:#16a085">${fmt(melhorDia.saldo)}</strong> (entradas ${fmt(melhorDia.e)} / saídas ${fmt(melhorDia.s)})</div>`;
+  }
+  if(piorDia && diasArr.length>1){
+    html+=`<div class="ia-card ${piorDia.saldo<0?'critico':'neutro'}">📉 <strong>${fmtData(piorDia.dia)}</strong> foi o dia com pior resultado: <strong style="color:${piorDia.saldo<0?'#e74c3c':'#2980b9'}">${fmt(piorDia.saldo)}</strong> (entradas ${fmt(piorDia.e)} / saídas ${fmt(piorDia.s)})</div>`;
+  }
+  if(!diasArr.length){
+    html+=`<div class="det-empty">Sem dados suficientes no período para identificar melhor/pior dia.</div>`;
+  }
+  html+='</div>';
+  return html;
+}
+
+function montarDetalheLanc(lista){
+  const total=lista.length;
+  const qE=lista.filter(d=>d.tipo==='E').length;
+  const qS=lista.filter(d=>d.tipo==='S').length;
+  const maiorGeral=lista.length?lista.reduce((a,b)=>b.valor>a.valor?b:a):null;
+  const menorGeral=lista.length?lista.reduce((a,b)=>b.valor<a.valor?b:a):null;
+
+  const porDia={};
+  lista.forEach(d=>{
+    const dia=d.data||'—';
+    if(!porDia[dia]) porDia[dia]={e:0,s:0,qtd:0};
+    if(d.tipo==='E') porDia[dia].e+=d.valor; else porDia[dia].s+=d.valor;
+    porDia[dia].qtd++;
+  });
+  const diasArr=Object.keys(porDia).map(dia=>({dia, saldo:porDia[dia].e-porDia[dia].s, qtd:porDia[dia].qtd}));
+  diasArr.sort((a,b)=>b.saldo-a.saldo);
+  const diaLucro=diasArr[0];
+  const diaPrejuizo=diasArr[diasArr.length-1];
+  const diaMaisAtivo=[...diasArr].sort((a,b)=>b.qtd-a.qtd)[0];
+
+  let html=`<div class="det-kpis">
+    <div class="det-kpi"><div class="dv">${total}</div><div class="dl">Total de lançamentos</div></div>
+    <div class="det-kpi"><div class="dv" style="color:#16a085">${qE}</div><div class="dl">Entradas</div></div>
+    <div class="det-kpi"><div class="dv" style="color:#e74c3c">${qS}</div><div class="dl">Saídas</div></div>
+    <div class="det-kpi"><div class="dv">${diasArr.length}</div><div class="dl">Dias com movimento</div></div>
+  </div>
+  <div class="det-chart-wrap"><canvas id="chDet" height="100"></canvas></div>
+  <div class="det-section"><h3>🔝 Destaques</h3>`;
+
+  if(maiorGeral){
+    html+=`<div class="det-list-item" style="border-color:#f1c40f;background:#fffdf3">
+      <div><span class="det-badge">${maiorGeral.tipo==='E'?'Maior entrada':'Maior saída... cuidado'}</span>${maiorGeral.descricao}
+      <div class="meta">${fmtData(maiorGeral.data)} · ${maiorGeral.categoria}</div></div>
+      <strong style="color:${maiorGeral.tipo==='E'?'#16a085':'#e74c3c'}">${fmt(maiorGeral.valor)}</strong>
+    </div>`;
+  }
+  if(menorGeral && menorGeral.id!==(maiorGeral&&maiorGeral.id)){
+    html+=`<div class="det-list-item">
+      <div><span class="det-badge" style="background:#8492a6">Menor lançamento</span>${menorGeral.descricao}
+      <div class="meta">${fmtData(menorGeral.data)} · ${menorGeral.categoria}</div></div>
+      <strong>${fmt(menorGeral.valor)}</strong>
+    </div>`;
+  }
+  html+='</div><div class="det-section"><h3>🗓️ Dias que se destacam</h3>';
+  if(diaLucro){
+    html+=`<div class="ia-card positivo">🏆 Dia com <strong>melhor saldo</strong>: ${fmtData(diaLucro.dia)} (${fmt(diaLucro.saldo)}, ${diaLucro.qtd} lançamento(s))</div>`;
+  }
+  if(diaPrejuizo && diasArr.length>1){
+    html+=`<div class="ia-card ${diaPrejuizo.saldo<0?'critico':'neutro'}">📉 Dia com <strong>pior saldo</strong>: ${fmtData(diaPrejuizo.dia)} (${fmt(diaPrejuizo.saldo)}, ${diaPrejuizo.qtd} lançamento(s))</div>`;
+  }
+  if(diaMaisAtivo){
+    html+=`<div class="ia-card neutro">⚡ Dia <strong>mais movimentado</strong>: ${fmtData(diaMaisAtivo.dia)} com ${diaMaisAtivo.qtd} lançamento(s)</div>`;
+  }
+  if(!diasArr.length){
+    html+=`<div class="det-empty">Nenhum lançamento no período/filtro selecionado.</div>`;
+  }
+  html+='</div>';
+  return html;
+}
+
+function desenharChartDetalhe(lista){
+  const canvas=id_('chDet');
+  if(!canvas) return;
+  if(chDet) chDet.destroy();
+  const porDia={};
+  lista.forEach(d=>{
+    const dia=d.data||'';
+    if(!porDia[dia]) porDia[dia]={e:0,s:0};
+    if(d.tipo==='E') porDia[dia].e+=d.valor; else porDia[dia].s+=d.valor;
+  });
+  const dias=Object.keys(porDia).sort();
+  const labels=dias.map(d=>fmtData(d));
+
+  if(detTipoAtual==='E'){
+    chDet=new Chart(canvas,{type:'bar',data:{labels,datasets:[{label:'Entradas',data:dias.map(d=>porDia[d].e),backgroundColor:'#27ae60',borderRadius:4}]},
+      options:{maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Entradas por dia'}},scales:{y:{beginAtZero:true}}}});
+  } else if(detTipoAtual==='S'){
+    chDet=new Chart(canvas,{type:'bar',data:{labels,datasets:[{label:'Saídas',data:dias.map(d=>porDia[d].s),backgroundColor:'#e74c3c',borderRadius:4}]},
+      options:{maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Saídas por dia'}},scales:{y:{beginAtZero:true}}}});
+  } else {
+    chDet=new Chart(canvas,{type:'line',data:{labels,datasets:[
+      {label:'Entradas',data:dias.map(d=>porDia[d].e),borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.12)',fill:true,tension:.3},
+      {label:'Saídas',data:dias.map(d=>porDia[d].s),borderColor:'#e74c3c',backgroundColor:'rgba(231,76,60,.12)',fill:true,tension:.3},
+      {label:'Saldo do dia',data:dias.map(d=>porDia[d].e-porDia[d].s),borderColor:'#1e3c72',borderDash:[6,4],fill:false,tension:.3}
+    ]},options:{maintainAspectRatio:false,plugins:{title:{display:true,text:'Evolução no período'}},scales:{y:{beginAtZero:false}}}});
+  }
+}
+
 // ===== RENDER =====
 function render(){
   let tE=0,tS=0;
@@ -977,7 +1513,7 @@ function render(){
 
   id_('tabela').innerHTML=filtrados.map(d=>`
     <tr>
-      <td>${(d.data||'').split('-').reverse().join('/')}</td>
+      <td>${fmtData(d.data)}</td>
       <td>${d.descricao}</td>
       <td>${d.categoria}</td>
       <td><span class="tag ${d.tipo}">${d.tipo==='E'?'Entrada':'Saída'}</span></td>
@@ -985,8 +1521,71 @@ function render(){
       <td class="no-print"><button class="btn b-red" style="padding:4px 9px" onclick="excluir('${d.id}')">🗑️</button></td>
     </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:16px;color:#999">Nenhum lançamento no período/filtro.</td></tr>';
 
-  renderCharts(baseCards);
-  id_('dica').innerHTML=gerarDicas(baseCards);
+  renderCharts(filtrados, id_('fTipo').value);
+  renderAvisoCatMista();
+  // (tarja de dica removida — análise completa aparece em popup ao logar)
+}
+
+// ===== DIAGNÓSTICO: categoria usada tanto em Entrada quanto em Saída =====
+// Ex: "Salário de funcionário" aparecendo ao mesmo tempo nas Entradas e nas
+// Saídas geralmente é erro de lançamento (tipo errado escolhido). Avisamos
+// o usuário e deixamos um atalho pra ele encontrar e corrigir esses registros.
+let detCategoriaMistaAtual=null;
+function detectarCategoriasMistas(){
+  const porCat={};
+  dados.forEach(d=>{
+    if(!porCat[d.categoria]) porCat[d.categoria]={E:0,S:0};
+    porCat[d.categoria][d.tipo==='E'?'E':'S']++;
+  });
+  return Object.keys(porCat).filter(c=>porCat[c].E>0 && porCat[c].S>0)
+    .map(c=>({categoria:c, qtdE:porCat[c].E, qtdS:porCat[c].S}));
+}
+
+function renderAvisoCatMista(){
+  const el=id_('avisoCatMista');
+  if(!el) return;
+  const mistas=detectarCategoriasMistas();
+  if(!mistas.length){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='block';
+  el.innerHTML = `<div class="ia-card alerta" style="margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+    <div>⚠️ <strong>Categoria usada em Entrada E em Saída ao mesmo tempo</strong> — provavelmente é erro de lançamento. Confira:
+      ${mistas.map(m=>`<button class="btn b-orange" style="padding:5px 12px;font-size:12.5px;margin:6px 6px 0 0" onclick="abrirDetalheCategoriaMista('${m.categoria.replace(/'/g,"\\'")}')">${m.categoria} (${m.qtdE} entrada · ${m.qtdS} saída)</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function abrirDetalheCategoriaMista(categoria){
+  detTipoAtual='mista';
+  detCategoriaMistaAtual=categoria;
+  id_('modalDetHeader').style.background='linear-gradient(135deg,#f39c12,#e67e22)';
+  id_('modalDetTitulo').textContent='⚠️ "'+categoria+'" — Entrada x Saída';
+  id_('dDe').value=''; id_('dAte').value='';
+  const opc=categorias.map(c=>`<option value="${c}">${c}</option>`).join('');
+  id_('dCat').innerHTML='<option value="">Todas categorias</option>'+opc;
+  id_('dCat').value=categoria;
+  id_('modalDet').classList.add('show');
+  id_('modalDetBody').innerHTML=montarDetalheCategoriaMista(categoria);
+}
+
+function montarDetalheCategoriaMista(categoria){
+  const itens=dados.filter(d=>d.categoria===categoria).sort(ordDataDesc);
+  const ents=itens.filter(d=>d.tipo==='E');
+  const sais=itens.filter(d=>d.tipo==='S');
+  let html=`<div class="ia-card alerta">Essa categoria tem <strong>${ents.length} lançamento(s) de Entrada</strong> e <strong>${sais.length} lançamento(s) de Saída</strong>. Se isso não fizer sentido pro seu negócio (ex: uma categoria de despesa como salário aparecendo como receita), provavelmente algum lançamento foi cadastrado com o Tipo errado. Vá em Lançamentos, exclua o registro errado e recadastre com o Tipo certo.</div>`;
+  html+='<div class="det-section"><h3>📥 Lançamentos como Entrada</h3>';
+  html += ents.length ? ents.map(d=>`
+    <div class="det-list-item" style="border-color:#fde3cf;background:#fffaf3">
+      <div><span class="det-badge" style="background:#16a085">${fmtData(d.data)}</span>${d.descricao}</div>
+      <strong style="color:#16a085">${fmt(d.valor)}</strong>
+    </div>`).join('') : '<div class="det-empty">Nenhum.</div>';
+  html+='</div><div class="det-section"><h3>📤 Lançamentos como Saída</h3>';
+  html += sais.length ? sais.map(d=>`
+    <div class="det-list-item" style="border-color:#fde3cf;background:#fffaf3">
+      <div><span class="det-badge" style="background:#e74c3c">${fmtData(d.data)}</span>${d.descricao}</div>
+      <strong style="color:#e74c3c">${fmt(d.valor)}</strong>
+    </div>`).join('') : '<div class="det-empty">Nenhum.</div>';
+  html+='</div>';
+  return html;
 }
 
 // ===== DICAS =====
@@ -1041,34 +1640,81 @@ function gerarDicas(list){
 }
 
 // ===== GRÁFICOS =====
-function renderCharts(list){
-  const porCat={};
-  list.forEach(d=>{ if(d.tipo==='S') porCat[d.categoria]=(porCat[d.categoria]||0)+d.valor; });
-  const catLabels=Object.keys(porCat), catVals=Object.values(porCat);
+// list  -> já vem filtrada por data/categoria/busca/TIPO (igual à tabela)
+// tipoF -> '' (todos) | 'E' (somente entradas) | 'S' (somente saídas)
+function renderCharts(list, tipoF){
+  tipoF = tipoF || '';
+
+  // ---------- 1) DOUGHNUT: composição por categoria ----------
+  // Mostra a composição do que está sendo exibido no momento:
+  // - filtro "Todos"     -> composição das SAÍDAS (pra onde vai o dinheiro)
+  // - filtro "Entradas"  -> composição das ENTRADAS (de onde vem o dinheiro)
+  // - filtro "Saídas"    -> composição das SAÍDAS
+  const tipoPizza = tipoF==='E' ? 'E' : 'S';
+  const corePizza = tipoPizza==='E'
+    ? ['#27ae60','#2ecc71','#16a085','#1abc9c','#3498db','#9b59b6','#34495e','#f1c40f']
+    : ['#e74c3c','#e67e22','#f1c40f','#9b59b6','#3498db','#1abc9c','#34495e','#fd79a8'];
+  const porCatPizza={};
+  list.forEach(d=>{ if(d.tipo===tipoPizza) porCatPizza[d.categoria]=(porCatPizza[d.categoria]||0)+d.valor; });
+  const catLabelsP=Object.keys(porCatPizza), catValsP=Object.values(porCatPizza);
   if(chPizza) chPizza.destroy();
   chPizza=new Chart(id_('chPizza'),{
     type:'doughnut',
-    data:{labels:catLabels.length?catLabels:['Sem saídas'],
-      datasets:[{data:catVals.length?catVals:[1],
-      backgroundColor:['#e74c3c','#e67e22','#f1c40f','#9b59b6','#3498db','#1abc9c','#34495e','#fd79a8']}]},
-    options:{plugins:{title:{display:true,text:'🍕 Saídas por Categoria'},legend:{position:'bottom'}}}
+    data:{labels:catLabelsP.length?catLabelsP:[tipoPizza==='E'?'Sem entradas':'Sem saídas'],
+      datasets:[{data:catValsP.length?catValsP:[1], backgroundColor:corePizza}]},
+    options:{maintainAspectRatio:false,plugins:{
+      title:{display:true,text:(tipoPizza==='E'?'🍕 Entradas':'🍕 Saídas')+' por Categoria',font:{size:13}},
+      legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}},
+      tooltip:{callbacks:{label:ctx=>ctx.label+': '+fmt(ctx.parsed)}}
+    }}
   });
-  const ent={},sai={};
-  list.forEach(d=>{
-    if(d.tipo==='E') ent[d.categoria]=(ent[d.categoria]||0)+d.valor;
-    else sai[d.categoria]=(sai[d.categoria]||0)+d.valor;
-  });
-  const todas=[...new Set([...Object.keys(ent),...Object.keys(sai)])];
+
+  // ---------- 2) BARRA HORIZONTAL: ranking por categoria ----------
+  // - filtro "Todos"     -> RESULTADO por categoria (entradas - saídas): quem dá lucro x quem pesa
+  // - filtro "Entradas"  -> ranking das categorias que mais trazem entrada
+  // - filtro "Saídas"    -> ranking das categorias que mais consomem (maior gasto primeiro)
   if(chC) chC.destroy();
-  chC=new Chart(id_('chC'),{
-    type:'bar',
-    data:{labels:todas,datasets:[
-      {label:'Entradas',data:todas.map(c=>ent[c]||0),backgroundColor:'#27ae60'},
-      {label:'Saídas',data:todas.map(c=>sai[c]||0),backgroundColor:'#e74c3c'}
-    ]},
-    options:{plugins:{title:{display:true,text:'📊 Entradas x Saídas por Categoria'}},
-      responsive:true,scales:{y:{beginAtZero:true}}}
-  });
+  if(tipoF===''){
+    const ent={},sai={};
+    list.forEach(d=>{
+      if(d.tipo==='E') ent[d.categoria]=(ent[d.categoria]||0)+d.valor;
+      else sai[d.categoria]=(sai[d.categoria]||0)+d.valor;
+    });
+    const todasCat=[...new Set([...Object.keys(ent),...Object.keys(sai)])];
+    const saldoCat=todasCat.map(c=>({cat:c, saldo:(ent[c]||0)-(sai[c]||0)})).sort((a,b)=>b.saldo-a.saldo);
+    chC=new Chart(id_('chC'),{
+      type:'bar',
+      data:{labels:saldoCat.map(c=>c.cat),datasets:[{
+        label:'Resultado (Entradas − Saídas)',
+        data:saldoCat.map(c=>c.saldo),
+        backgroundColor:saldoCat.map(c=>c.saldo>=0?'#27ae60':'#e74c3c'),
+        borderRadius:4
+      }]},
+      options:{maintainAspectRatio:false,indexAxis:'y',
+        plugins:{title:{display:true,text:'📊 Resultado por Categoria (lucro x prejuízo)',font:{size:13}},legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.x)}}},
+        responsive:true,scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}}
+    });
+  } else {
+    const porCatBarra={};
+    list.forEach(d=>{ porCatBarra[d.categoria]=(porCatBarra[d.categoria]||0)+d.valor; });
+    const rank=Object.keys(porCatBarra).map(c=>({cat:c, valor:porCatBarra[c]})).sort((a,b)=>b.valor-a.valor);
+    const corBarra = tipoF==='E' ? '#27ae60' : '#e74c3c';
+    const tituloBarra = tipoF==='E' ? '💰 Ranking de Entradas por Categoria' : '🔻 Ranking de Saídas por Categoria';
+    chC=new Chart(id_('chC'),{
+      type:'bar',
+      data:{labels:rank.map(c=>c.cat),datasets:[{label:tipoF==='E'?'Entradas':'Saídas',data:rank.map(c=>c.valor),backgroundColor:corBarra,borderRadius:4}]},
+      options:{maintainAspectRatio:false,indexAxis:'y',
+        plugins:{title:{display:true,text:tituloBarra,font:{size:13}},legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.x)}}},
+        responsive:true,scales:{x:{beginAtZero:true,ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}}
+    });
+  }
+
+  // ---------- 3) LINHA: evolução no período ----------
+  // - filtro "Todos"     -> Entradas, Saídas e Saldo do dia (3 linhas)
+  // - filtro "Entradas"  -> só a linha de Entradas (+ acumulado)
+  // - filtro "Saídas"    -> só a linha de Saídas (+ acumulado)
   const porDia={};
   list.forEach(d=>{
     const dia=d.data||'';
@@ -1076,15 +1722,35 @@ function renderCharts(list){
     if(d.tipo==='E') porDia[dia].e+=d.valor; else porDia[dia].s+=d.valor;
   });
   const dias=Object.keys(porDia).sort();
+  const labelsDias=dias.map(d=>fmtData(d));
   if(chEvol) chEvol.destroy();
+
+  let datasetsEvol, tituloEvol;
+  if(tipoF===''){
+    tituloEvol='📈 Evolução no Período (Entradas, Saídas e Saldo)';
+    datasetsEvol=[
+      {label:'Entradas',data:dias.map(d=>porDia[d].e),borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.1)',fill:true,tension:.3},
+      {label:'Saídas',data:dias.map(d=>porDia[d].s),borderColor:'#e74c3c',backgroundColor:'rgba(231,76,60,.1)',fill:true,tension:.3},
+      {label:'Saldo do dia',data:dias.map(d=>porDia[d].e-porDia[d].s),borderColor:'#1e3c72',borderDash:[6,4],fill:false,tension:.3,pointRadius:2}
+    ];
+  } else {
+    const campo = tipoF==='E' ? 'e' : 's';
+    const cor = tipoF==='E' ? '#27ae60' : '#e74c3c';
+    const corFundo = tipoF==='E' ? 'rgba(39,174,96,.1)' : 'rgba(231,76,60,.1)';
+    let acumulado=0;
+    const serieAcumulada=dias.map(d=>{ acumulado+=porDia[d][campo]; return acumulado; });
+    tituloEvol='📈 Evolução das '+(tipoF==='E'?'Entradas':'Saídas')+' no Período';
+    datasetsEvol=[
+      {label:tipoF==='E'?'Entradas do dia':'Saídas do dia',data:dias.map(d=>porDia[d][campo]),borderColor:cor,backgroundColor:corFundo,fill:true,tension:.3},
+      {label:'Acumulado no período',data:serieAcumulada,borderColor:'#1e3c72',borderDash:[6,4],fill:false,tension:.3,pointRadius:2}
+    ];
+  }
+
   chEvol=new Chart(id_('chEvolucao'),{
     type:'line',
-    data:{labels:dias.map(d=>d.split('-').reverse().join('/')),datasets:[
-      {label:'Entradas',data:dias.map(d=>porDia[d].e),borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.1)',fill:true,tension:.3},
-      {label:'Saídas',data:dias.map(d=>porDia[d].s),borderColor:'#e74c3c',backgroundColor:'rgba(231,76,60,.1)',fill:true,tension:.3}
-    ]},
-    options:{plugins:{title:{display:true,text:'📈 Evolução no Período'}},
-      responsive:true,scales:{y:{beginAtZero:true}}}
+    data:{labels:labelsDias,datasets:datasetsEvol},
+    options:{maintainAspectRatio:false,plugins:{title:{display:true,text:tituloEvol,font:{size:13}},legend:{labels:{boxWidth:10,font:{size:11}}}},
+      responsive:true,scales:{y:{beginAtZero:true,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}}}
   });
 }
 
@@ -1119,7 +1785,7 @@ function exportarPDF(){
     startY:38,
     head:[['Data','Descrição','Categoria','Tipo','Valor']],
     body:filtrados.map(d=>[
-      (d.data||'').split('-').reverse().join('/'),
+      fmtData(d.data),
       d.descricao,d.categoria,
       (d.tipo==='E'?'Entrada':'Saída'),
       fmt(d.valor)
@@ -1213,6 +1879,7 @@ function showMsg(txt,ok){
 
 // ===== ANÁLISE FINANCEIRA COM IA =====
 const ANALISE_DATE_KEY = 'gf_analise_data';
+let ultimoTipoAnalise = 'financeira';
 
 function abrirModalAnalise(){
   id_('modalIA').classList.add('show');
@@ -1228,24 +1895,172 @@ function fecharModalIA(evt){
 }
 
 function verificarAnaliseAutomatica(){
-  const hoje = new Date().toISOString().slice(0,10);
-  const ultimaData = localStorage.getItem(ANALISE_DATE_KEY);
-  if(ultimaData !== hoje){
-    setTimeout(()=>{ rodarAnalise(); }, 1800);
-  } else {
-    const btnF = id_('btnReabrirIA');
-    if(btnF) btnF.style.display='flex';
-  }
+  // Sempre mostra a análise em popup assim que o usuário loga no sistema
+  setTimeout(()=>{ rodarAnalise(); }, 1200);
 }
 
+function reanalisar(){
+  if(ultimoTipoAnalise==='dicas') rodarDicasNegocio();
+  else rodarAnalise();
+}
+
+// Análise financeira completa: resumo, categorias, evolução mensal etc.
 function rodarAnalise(){
   if(!dados.length) return;
+  ultimoTipoAnalise = 'financeira';
   abrirModalAnalise();
+  id_('modalIATitulo').innerHTML = '📊 Análise Financeira <span class="badge" id="modalIABadge">RELATÓRIO DIÁRIO</span>';
   const r = calcularResumo();
   const html = gerarHTMLAnalise(r);
   id_('modalIABody').innerHTML = html;
   id_('iaDataAnalise').textContent = 'Análise gerada em '+new Date().toLocaleString('pt-BR');
   localStorage.setItem(ANALISE_DATE_KEY, new Date().toISOString().slice(0,10));
+}
+
+// Dicas de Negócio: NÃO mostra o resumo financeiro (entradas/saídas/categorias/tabelas).
+// É só a leitura da situação + dicas práticas geradas a partir dela.
+function rodarDicasNegocio(){
+  if(!dados.length){
+    showMsg('Registre alguns lançamentos primeiro para eu poder gerar dicas com base no seu negócio.', false);
+    return;
+  }
+  ultimoTipoAnalise = 'dicas';
+  abrirModalAnalise();
+  id_('modalIATitulo').innerHTML = '💡 Dicas de Negócio <span class="badge" id="modalIABadge">BASEADO NO SEU MOMENTO ATUAL</span>';
+  const r = calcularResumo();
+  const html = gerarHTMLDicasNegocio(r);
+  id_('modalIABody').innerHTML = html;
+  id_('iaDataAnalise').textContent = 'Dicas geradas em '+new Date().toLocaleString('pt-BR');
+}
+
+function gerarHTMLDicasNegocio(r){
+  if(!r.totalRegistros){
+    return `<div class="ia-error">📋<p>Ainda não há lançamentos suficientes para um parecer técnico. Registre algumas movimentações e gere as dicas novamente.</p></div>`;
+  }
+
+  const margem = r.margem;
+  const liquidez7  = r.saldo7;
+  const liquidez30 = r.saldo30;
+  const concSaida  = r.catSaidas[0]  ? r.catSaidas[0].pct  : 0;
+  const concEntrada= r.catEntradas[0]? r.catEntradas[0].pct: 0;
+  const temTendencia = !!(r.ult && r.ant);
+  const queda  = temTendencia && r.tendEntradas < -10;
+  const custosAlta = temTendencia && r.tendSaidas > 15;
+  const reservaIdeal = r.mediaSMensal * 3;
+
+  let html = '';
+
+  // ===== 1. PARECER DO ANALISTA =====
+  let parecer = '';
+  if(margem < 0){
+    parecer = `A operação está consumindo mais caixa do que gera. Saldo do período negativo em <strong>${fmt(Math.abs(r.saldo))}</strong>, com margem de <strong>${margem.toFixed(1)}%</strong>. Nesse cenário, qualquer atraso de recebimento ou despesa extra pressiona diretamente o caixa — o foco neste momento não é crescer, é estabilizar.`;
+  } else if(margem < 15){
+    parecer = `A operação é superavitária, mas com margem estreita (<strong>${margem.toFixed(1)}%</strong>). O negócio funciona, porém com pouca folga: o caixa absorve bem o dia a dia normal, mas tem baixa capacidade de suportar choques — uma queda de receita ou um custo inesperado pode levar o saldo ao negativo rapidamente.`;
+  } else if(margem < 30){
+    parecer = `A operação apresenta margem saudável (<strong>${margem.toFixed(1)}%</strong>) e gera caixa de forma consistente. O risco operacional imediato é baixo; o desafio nesta faixa costuma ser de alocação de capital — decidir entre reinvestir, criar reserva ou distribuir resultado.`;
+  } else {
+    parecer = `A margem está em um patamar elevado (<strong>${margem.toFixed(1)}%</strong>), indicando eficiência operacional acima da média para negócios deste porte. O ponto de atenção deixa de ser sobrevivência de caixa e passa a ser disciplina de alocação: reserva, reinvestimento e eventual distribuição de resultado.`;
+  }
+  if(liquidez7 < 0 && liquidez30 >= 0){
+    parecer += ` Um ponto a monitorar: nos últimos 7 dias o saldo ficou negativo (${fmt(liquidez7)}), mesmo com o acumulado de 30 dias positivo — pode ser sazonalidade pontual, mas vale acompanhar a próxima semana antes de descartar.`;
+  } else if(liquidez30 < 0){
+    parecer += ` A liquidez de curtíssimo prazo confirma o quadro: os últimos 30 dias também fecham negativos (${fmt(liquidez30)}), o que reforça a urgência de uma ação de caixa.`;
+  }
+
+  html += `<div class="ia-section"><h3>🧭 Parecer do Analista</h3>
+    <div class="ia-card neutro" style="font-size:14.5px;line-height:1.75">${parecer}</div>
+  </div>`;
+
+  // ===== 2. CLASSIFICAÇÃO DE RISCO =====
+  const motivos = [];
+  let riscoTipo='positivo', riscoLabel='Baixo', riscoCor='#16a085';
+  let pontos = 0;
+  if(margem < 0) pontos += 3; else if(margem < 15) pontos += 1.5; else if(margem < 5) pontos += 2.5;
+  if(liquidez30 < 0) pontos += 2;
+  if(concSaida > 40) pontos += 1.5;
+  if(concEntrada > 70) pontos += 1.5;
+  if(custosAlta) pontos += 1;
+  if(queda) pontos += 1.5;
+
+  if(margem<0) motivos.push('Saldo do período negativo');
+  if(liquidez30<0) motivos.push('Caixa dos últimos 30 dias negativo');
+  if(concSaida>40 && r.catSaidas[0]) motivos.push(`Mais de 40% das saídas concentradas em "${r.catSaidas[0].cat}"`);
+  if(concEntrada>70 && r.catEntradas[0]) motivos.push(`Mais de 70% da receita depende de uma única fonte ("${r.catEntradas[0].cat}")`);
+  if(custosAlta) motivos.push(`Saídas cresceram ${r.tendSaidas.toFixed(0)}% no último mês frente ao anterior`);
+  if(queda) motivos.push(`Entradas recuaram ${Math.abs(r.tendEntradas).toFixed(0)}% no último mês`);
+
+  if(pontos >= 4){ riscoTipo='critico'; riscoLabel='Alto'; riscoCor='#e74c3c'; }
+  else if(pontos >= 1.5){ riscoTipo='alerta'; riscoLabel='Médio'; riscoCor='#f39c12'; }
+  else { motivos.push('Nenhum fator estrutural de risco identificado nos dados atuais'); }
+
+  html += `<div class="ia-section"><h3>⚖️ Classificação de Risco do Negócio</h3>
+    <div class="ia-card ${riscoTipo}" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+      <div style="font-size:26px;font-weight:800;color:${riscoCor};min-width:90px">${riscoLabel}</div>
+      <div style="flex:1;min-width:200px;font-size:13.5px;line-height:1.6">
+        ${motivos.map(m=>'• '+m).join('<br>')}
+      </div>
+    </div>
+  </div>`;
+
+  // ===== 3. PLANO DE AÇÃO POR HORIZONTE =====
+  const curto = [], medio = [], longo = [];
+
+  if(margem<0 || liquidez30<0){
+    curto.push('Suspender por 30 dias toda saída não essencial e renegociar prazos de pagamento com fornecedores recorrentes — o objetivo imediato é parar a queima de caixa.');
+  }
+  if(liquidez7<0 && liquidez30>=0){
+    curto.push('Acompanhar diariamente o saldo dos próximos 7 dias para confirmar se a queda recente é pontual ou estrutural antes de tomar decisões maiores.');
+  }
+  if(r.maioresSaidas.length && r.maioresSaidas[0].valor > r.mediaEMensal*0.4){
+    curto.push(`Revisar a maior saída individual do período ("${r.maioresSaidas[0].descricao}", ${fmt(r.maioresSaidas[0].valor)}) — gastos pontuais desse porte merecem aprovação formal antes de se repetirem.`);
+  }
+  if(!curto.length){
+    curto.push('Manter a rotina atual de controle e formalizar o registro diário de entradas e saídas — é a base para qualquer decisão futura ter respaldo de dado real.');
+  }
+
+  if(concSaida>35 && r.catSaidas[0]){
+    medio.push(`Negociar contrato ou buscar fornecedor alternativo para "${r.catSaidas[0].cat}", categoria que hoje concentra ${r.catSaidas[0].pct.toFixed(0)}% das saídas — reduzir essa dependência diminui o impacto de qualquer reajuste futuro.`);
+  }
+  if(concEntrada>60 && r.catEntradas[0]){
+    medio.push(`Iniciar diversificação de receita: hoje ${r.catEntradas[0].pct.toFixed(0)}% do faturamento vem de "${r.catEntradas[0].cat}". Um novo canal ou serviço complementar reduz a exposição a um único cliente ou produto.`);
+  }
+  if(margem>=0 && margem<20){
+    medio.push('Revisar tabela de preços e custos fixos com a meta de elevar a margem operacional para ao menos 20% nos próximos meses — é o piso recomendado para absorver imprevistos sem comprometer o caixa.');
+  }
+  if(!medio.length){
+    medio.push('Avaliar reinvestimento seletivo (capacitação, marketing ou equipamento) que sustente o crescimento sem comprometer a margem atual.');
+  }
+
+  if(margem>=15){
+    longo.push(`Formalizar uma reserva de emergência equivalente a 3 meses de custo fixo (aproximadamente ${fmt(reservaIdeal)}), separada do caixa operacional.`);
+  }
+  longo.push('Estabelecer indicadores mensais fixos (margem, concentração de receita, maior categoria de custo) e revisá-los em uma data fixa todo mês — transforma a gestão de reativa para preventiva.');
+  if(margem>=25){
+    longo.push('Com a margem atual, é razoável estudar expansão controlada: novo serviço, novo canal de venda ou ampliação de capacidade — sempre validando o impacto na margem antes de comprometer caixa.');
+  }
+
+  function blocoPlano(titulo, itens, cor){
+    return `<div style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:13px;color:${cor};text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">${titulo}</div>
+      ${itens.map(t=>`<div class="ia-card" style="padding:10px 14px;margin-bottom:8px">${t}</div>`).join('')}
+    </div>`;
+  }
+
+  html += `<div class="ia-section"><h3>🗺️ Plano de Ação por Horizonte</h3>
+    ${blocoPlano('Curto prazo — próximos 30 dias', curto, '#c0392b')}
+    ${blocoPlano('Médio prazo — 1 a 3 meses', medio, '#d68910')}
+    ${blocoPlano('Longo prazo — visão estratégica', longo, '#1e8449')}
+  </div>`;
+
+  // ===== 4. RECOMENDAÇÃO PRIORITÁRIA =====
+  const prioridade = curto[0] || medio[0] || longo[0];
+  html += `<div class="ia-section"><h3>🎯 Recomendação Prioritária do Analista</h3>
+    <div class="ia-card ${riscoLabel==='Alto'?'critico':riscoLabel==='Médio'?'alerta':'positivo'}" style="font-size:14.5px;line-height:1.7">
+      <strong>Se houver tempo para apenas uma ação esse mês, que seja esta:</strong><br>${prioridade}
+    </div>
+  </div>`;
+
+  return html;
 }
 
 function calcularResumo(){
@@ -1509,6 +2324,8 @@ function gerarSugestoes(r){
 // ===== INÍCIO =====
 window.onload=function(){
   id_('printData').textContent='Gerado em '+new Date().toLocaleString('pt-BR');
+  aplicarLogoNosElementos();
+  ligarPreviaLogoInput();
   id_('senha').focus();
 };
 </script>
