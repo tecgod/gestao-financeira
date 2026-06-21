@@ -169,17 +169,23 @@
   @media print{
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     body{background:#fff!important;color:#000!important}
-    header,#login,.no-print,canvas,.charts{display:none!important}
+    header,#login,.no-print,canvas,.charts,.chart-box,.btn-reabrir,#chEvolucao,#chPizza,#chC{display:none!important}
     .container{margin:0;max-width:100%}
     .tela{display:none!important}
     #tela-dash{display:block!important}
     .box{box-shadow:none!important;border:1px solid #000;border-radius:0;page-break-inside:avoid;margin-bottom:12px}
     .box h2{border-bottom:1px solid #000}
-    .card{background:#fff!important;color:#000!important;border:1px solid #000;border-radius:0;box-shadow:none!important}
-    .card .ico{display:none}.card p{color:#000!important}
-    table,th,td{border:1px solid #000!important}
-    th{background:#fff!important;color:#000!important}
-    .tag{background:#fff!important;color:#000!important;border:1px solid #000;padding:1px 6px}
+    .cards{display:flex!important;flex-wrap:wrap;gap:22px;margin-bottom:14px}
+    .card{background:none!important;color:#000!important;border:none!important;border-radius:0;box-shadow:none!important;padding:0!important;width:auto!important;position:static!important}
+    .card .ico{display:none}
+    .card .ver-mais{display:none!important}
+    .card h3{font-size:11px;opacity:1!important}
+    .card p{color:#000!important;font-size:17px;margin-top:2px}
+    .card small{font-size:11px;color:#444!important;opacity:1!important}
+    table{border:none!important;border-collapse:collapse!important}
+    th,td{border:none!important;padding:4px 6px!important;font-size:12px!important}
+    th{background:#fff!important;color:#000!important;border-bottom:1px solid #000!important;font-weight:700}
+    .tag{background:none!important;color:#000!important;border:none!important;border-radius:0!important;padding:0!important;font-weight:700}
     .dica{border:1px solid #000;background:#fff!important}
     #printHeader{display:block!important;text-align:center;margin-bottom:12px}
     #printHeader h1{font-size:18px}#printHeader p{font-size:12px}
@@ -1295,8 +1301,9 @@ function aplicar(){
   const ordem=id_('fOrdem').value;
 
   filtrados=dados.filter(d=>{
-    if(de && (d.data||'')<de) return false;
-    if(ate && (d.data||'')>ate) return false;
+    const dt=String(d.data||'').slice(0,10);
+    if(de && dt<de) return false;
+    if(ate && dt>ate) return false;
     if(cat && d.categoria!==cat) return false;
     if(tipo && d.tipo!==tipo) return false;
     if(busca && !(d.descricao||'').toLowerCase().includes(busca)) return false;
@@ -1312,8 +1319,9 @@ function aplicar(){
   });
 
   baseCards=dados.filter(d=>{
-    if(de && (d.data||'')<de) return false;
-    if(ate && (d.data||'')>ate) return false;
+    const dt=String(d.data||'').slice(0,10);
+    if(de && dt<de) return false;
+    if(ate && dt>ate) return false;
     if(cat && d.categoria!==cat) return false;
     if(busca && !(d.descricao||'').toLowerCase().includes(busca)) return false;
     return true;
@@ -1364,8 +1372,9 @@ function limparFiltroDetalhe(){
 function listaFiltradaDetalhe(){
   const de=id_('dDe').value, ate=id_('dAte').value, cat=id_('dCat').value;
   return dados.filter(d=>{
-    if(de && (d.data||'')<de) return false;
-    if(ate && (d.data||'')>ate) return false;
+    const dt=String(d.data||'').slice(0,10);
+    if(de && dt<de) return false;
+    if(ate && dt>ate) return false;
     if(cat && d.categoria!==cat) return false;
     return true;
   });
